@@ -1,6 +1,7 @@
-import { IonButtons, IonContent, IonHeader, IonIcon, IonItem, IonList, IonMenuButton, IonTitle, IonToolbar } from '@ionic/react';
-import { americanFootball, basketball, beer, bluetooth, boat, build, flask, football, paperPlane, wifi } from 'ionicons/icons';
+import { IonButtons, IonContent, IonHeader, IonItem, IonList, IonMenuButton, IonTitle, IonToolbar, IonCheckbox, IonLabel } from '@ionic/react';
 import React from 'react';
+
+import { STONE_LIST } from '../utils/stone-list';
 
 const ListPage: React.FunctionComponent = () => {
   return (
@@ -10,7 +11,7 @@ const ListPage: React.FunctionComponent = () => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>List</IonTitle>
+          <IonTitle>Stone Locations</IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -22,27 +23,16 @@ const ListPage: React.FunctionComponent = () => {
 };
 
 const ListItems = () => {
-  const icons = [
-    flask,
-    wifi,
-    beer,
-    football,
-    basketball,
-    paperPlane,
-    americanFootball,
-    boat,
-    bluetooth,
-    build
-  ];
-
-  const items = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(x => {
+  const items = STONE_LIST.map(stone => {
     return (
-      <IonItem key={x}>
-        <IonIcon icon={icons[x - 1]} slot="start" />
-        Item {x}
-        <div className="item-note" slot="end">
-          This is item # {x}
-        </div>
+      <IonItem key={stone.stoneId}>
+        <IonCheckbox slot="start" />
+        <IonLabel>
+          <h2>{stone.locationName}</h2>
+          <p className="item-note">
+            Hold: {stone.holdName}
+          </p>
+        </IonLabel>
       </IonItem>
     );
   });

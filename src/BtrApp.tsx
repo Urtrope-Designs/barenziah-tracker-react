@@ -1,12 +1,11 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import { IonApp, IonPage, IonReactRouter, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { AppPage } from './declarations';
 
 import Menu from './components/Menu';
-import Home from './pages/Home';
 import List from './pages/List';
-import { home, list } from 'ionicons/icons';
+import { list } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/core/css/core.css';
@@ -26,27 +25,20 @@ import '@ionic/core/css/display.css';
 
 const appPages: AppPage[] = [
   {
-    title: 'Home',
-    url: '/home',
-    icon: home
-  },
-  {
     title: 'List',
-    url: '/home/list',
+    url: '/',
     icon: list
   }
 ];
 
-const App: React.FunctionComponent = () => (
+const BtrApp: React.FunctionComponent = () => (
   <IonApp>
     <IonReactRouter>
       <IonSplitPane contentId="main">
         <Menu appPages={appPages} />
         <IonPage id="main">
           <IonRouterOutlet>
-            <Route path="/:tab(home)" component={Home} exact={true} />
-            <Route path="/:tab(home)/list" component={List} exact={true} />
-            <Route exact path="/" render={() => <Redirect to="/home" />} />
+            <Route path="/" component={List} exact={true} />
           </IonRouterOutlet>
         </IonPage>
       </IonSplitPane>
@@ -54,4 +46,4 @@ const App: React.FunctionComponent = () => (
   </IonApp>
 );
 
-export default App;
+export default BtrApp;

@@ -1,9 +1,17 @@
 import { IonButtons, IonContent, IonHeader, IonItem, IonList, IonMenuButton, IonTitle, IonToolbar, IonCheckbox, IonLabel } from '@ionic/react';
 import React from 'react';
 
+import { connect } from 'react-redux';
 import { STONE_LIST } from '../utils/stone-list';
+import { FoundStoneIds } from '../store/checklists/types';
+import { toggleStoneFoundStatus } from '../store/checklists/actions';
 
-const ListPage: React.FunctionComponent = () => {
+interface Props {
+  foundStoneIds: FoundStoneIds,
+  onItemClick: Function
+};
+
+const ListPage: React.SFC<Props> = ({foundStoneIds, onItemClick}) => {
   return (
     <>
       <IonHeader>
@@ -16,17 +24,21 @@ const ListPage: React.FunctionComponent = () => {
       </IonHeader>
 
       <IonContent>
-        <ListItems />
+        <ListItems foundStoneIds={foundStoneIds} onItemClick={(i: number) => onItemClick(i)}/>
       </IonContent>
     </>
   );
 };
 
-const ListItems = () => {
+const ListItems: React.SFC<Props> = ({foundStoneIds, onItemClick}) => {
   const items = STONE_LIST.map(stone => {
     return (
       <IonItem key={stone.stoneId}>
-        <IonCheckbox slot="start" />
+        <IonCheckbox 
+          slot="start"
+          checked={foundStoneIds.some(i => i === stone.stoneId)}
+          onIonChange={(e: CustomEvent) => onItemClick(stone.stoneId)}
+        />
         <IonLabel>
           <h2>{stone.locationName}</h2>
           <p className="item-note">
@@ -40,4 +52,15 @@ const ListItems = () => {
   return <IonList>{items}</IonList>;
 };
 
-export default ListPage;
+const mapStateToProps = ((state: {foundStoneIds: FoundStoneIds}) => {
+  return {foundStoneIds: state.foundStoneIds};
+});
+
+const mapDispatchToProps = {
+  onItemClick: (stoneId: number) => toggleStoneFoundStatus(stoneId)
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(ListPage);

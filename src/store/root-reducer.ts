@@ -2,6 +2,6 @@ import { combineReducers } from "redux";
 
 import { foundStoneIds } from './checklists/reducer';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
     foundStoneIds,
 });

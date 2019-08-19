@@ -3,15 +3,15 @@ import React from 'react';
 
 import { connect } from 'react-redux';
 import { STONE_LIST } from '../utils/stone-list';
-import { FoundStoneIds } from '../store/checklists/types';
-import { toggleStoneFoundStatus } from '../store/checklists/actions';
+import { Checklist } from '../store/checklists/types';
+import { toggleStoneFoundStatus, updateChecklistName } from '../store/checklists/actions';
 
 interface Props {
-  foundStoneIds: FoundStoneIds,
+  currentChecklist: Checklist,
   onItemClick: Function
 };
 
-const ListPage: React.SFC<Props> = ({foundStoneIds, onItemClick}) => {
+const ListPage: React.SFC<Props> = ({currentChecklist, onItemClick}) => {
   return (
     <>
       <IonHeader>
@@ -24,19 +24,19 @@ const ListPage: React.SFC<Props> = ({foundStoneIds, onItemClick}) => {
       </IonHeader>
 
       <IonContent>
-        <ListItems foundStoneIds={foundStoneIds} onItemClick={(i: number) => onItemClick(i)}/>
+        <ListItems currentChecklist={currentChecklist} onItemClick={(i: number) => onItemClick(i)}/>
       </IonContent>
     </>
   );
 };
 
-const ListItems: React.SFC<Props> = ({foundStoneIds, onItemClick}) => {
+const ListItems: React.SFC<Props> = ({currentChecklist, onItemClick}) => {
   const items = STONE_LIST.map(stone => {
     return (
       <IonItem key={stone.stoneId}>
         <IonCheckbox 
           slot="start"
-          checked={foundStoneIds.some(i => i === stone.stoneId)}
+          checked={currentChecklist.foundStoneIds.some(i => i === stone.stoneId)}
           onIonChange={(e: CustomEvent) => onItemClick(stone.stoneId)}
         />
         <IonLabel>
@@ -52,12 +52,13 @@ const ListItems: React.SFC<Props> = ({foundStoneIds, onItemClick}) => {
   return <IonList>{items}</IonList>;
 };
 
-const mapStateToProps = ((state: {foundStoneIds: FoundStoneIds}) => {
-  return {foundStoneIds: state.foundStoneIds};
+const mapStateToProps = ((state: {currentChecklist: Checklist}) => {
+  return {currentChecklist: state.currentChecklist};
 });
 
 const mapDispatchToProps = {
-  onItemClick: (stoneId: number) => toggleStoneFoundStatus(stoneId)
+  onItemClick: (stoneId: number) => toggleStoneFoundStatus(stoneId),
+  onUpdateName: (newName: string) => updateChecklistName(newName)
 };
 
 export default connect(

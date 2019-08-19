@@ -1,7 +1,7 @@
 import { combineReducers } from "redux";
 
-import { foundStoneIds } from './checklists/reducer';
+import { currentChecklist } from './checklists/reducer';
 
 export const rootReducer = combineReducers({
-    foundStoneIds,
+    currentChecklist,
 });

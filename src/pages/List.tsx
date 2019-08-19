@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonItem, IonList, IonMenuButton, IonTitle, IonToolbar, IonCheckbox, IonLabel } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonItem, IonList, IonMenuButton, IonTitle, IonToolbar, IonCheckbox, IonLabel, IonInput } from '@ionic/react';
 import React from 'react';
 
 import { connect } from 'react-redux';
@@ -6,12 +6,18 @@ import { STONE_LIST } from '../utils/stone-list';
 import { Checklist } from '../store/checklists/types';
 import { toggleStoneFoundStatus, updateChecklistName } from '../store/checklists/actions';
 
-interface Props {
-  currentChecklist: Checklist,
-  onItemClick: Function
+interface PageProps {
+  currentChecklist: Checklist;
+  onItemClick: Function;
+  onUpdateName: Function;
 };
 
-const ListPage: React.SFC<Props> = ({currentChecklist, onItemClick}) => {
+interface ListProps {
+  currentChecklist: Checklist;
+  onItemClick: Function;
+};
+
+const ListPage: React.SFC<PageProps> = ({currentChecklist, onItemClick, onUpdateName}) => {
   return (
     <>
       <IonHeader>
@@ -19,7 +25,9 @@ const ListPage: React.SFC<Props> = ({currentChecklist, onItemClick}) => {
           <IonButtons slot="start">
             <IonMenuButton />
           </IonButtons>
-          <IonTitle>Stone Locations</IonTitle>
+          <IonTitle>
+            <IonInput value={currentChecklist.checklistName} onIonBlur={event => onUpdateName((event.target as HTMLInputElement).value)}></IonInput>
+          </IonTitle>
         </IonToolbar>
       </IonHeader>
 
@@ -30,7 +38,7 @@ const ListPage: React.SFC<Props> = ({currentChecklist, onItemClick}) => {
   );
 };
 
-const ListItems: React.SFC<Props> = ({currentChecklist, onItemClick}) => {
+const ListItems: React.SFC<ListProps> = ({currentChecklist, onItemClick}) => {
   const items = STONE_LIST.map(stone => {
     return (
       <IonItem key={stone.stoneId}>

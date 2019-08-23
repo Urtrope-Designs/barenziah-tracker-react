@@ -1,0 +1,3 @@
+ion-button.button-disabled {
+    --opacity: 0;
+}

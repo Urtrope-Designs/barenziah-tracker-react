@@ -1,5 +1,7 @@
 {
   "name": "barenziahTrackerReact",
-  "integrations": {},
+  "integrations": {
+    "capacitor": {}
+  },
   "type": "react"
 }

@@ -19,7 +19,7 @@ interface MenuProps extends RouteComponentProps {
 }
 
 const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
-  <IonMenu contentId="main">
+  <IonMenu contentId="main" type="overlay">
     <IonHeader>
       <IonToolbar>
         <IonTitle>Menu</IonTitle>
@@ -29,8 +29,8 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
       <IonList>
         {appPages.map((appPage, index) => {
           return (
-            <IonMenuToggle key={index} auto-hide="false">
-              <IonItem href={appPage.url}>
+            <IonMenuToggle key={index} autoHide={false}>
+              <IonItem routerLink={appPage.url} routerDirection="none">
                 <IonIcon slot="start" icon={appPage.icon} />
                 <IonLabel>{appPage.title}</IonLabel>
               </IonItem>

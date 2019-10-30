@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import { IonApp, IonPage, IonReactRouter, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { AppPage } from './declarations';
 
@@ -24,6 +24,7 @@ import '@ionic/core/css/text-alignment.css';
 import '@ionic/core/css/text-transformation.css';
 import '@ionic/core/css/flex-utils.css';
 import '@ionic/core/css/display.css';
+import { ChecklistsMap } from './store/checklists/types';
 
 const appPages: AppPage[] = [
   {
@@ -33,21 +34,29 @@ const appPages: AppPage[] = [
   }
 ];
 
-const BtrApp: React.FunctionComponent = () => (
-  <Provider store={store}>
-    <IonApp>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <Menu appPages={appPages} />
-          <IonPage id="main">
-            <IonRouterOutlet>
-              <Route path="/" component={List} exact={true} />
-            </IonRouterOutlet>
-          </IonPage>
-        </IonSplitPane>
-      </IonReactRouter>
-    </IonApp>
-  </Provider>
-);
+interface AppProps {
+  checklistsMap: ChecklistsMap
+}
+
+const BtrApp: React.FunctionComponent<AppProps> = () => {
+
+  return (
+    <Provider store={store}>
+      <IonApp>
+        <IonReactRouter>
+          <IonSplitPane contentId="main">
+            <Menu appPages={appPages} />
+            <IonPage id="main">
+              <IonRouterOutlet>
+                <Route path="/list/:checklistId" component={List} exact={true} />
+                <Redirect exact from="/" to="/list" />
+              </IonRouterOutlet>
+            </IonPage>
+          </IonSplitPane>
+        </IonReactRouter>
+      </IonApp>
+    </Provider>
+  );
+};
 
 export default BtrApp;

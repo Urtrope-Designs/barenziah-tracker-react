@@ -80,7 +80,7 @@ class ListPage extends React.Component<PageProps, PageState> {
   }
 }
 
-const ListItems: React.SFC<ListProps> = ({currentChecklist, onItemClick}) => {
+const ListItems: React.FC<ListProps> = ({currentChecklist, onItemClick}) => {
   const items = STONE_LIST.map(stone => {
     return (
       <IonItem key={stone.stoneId}>

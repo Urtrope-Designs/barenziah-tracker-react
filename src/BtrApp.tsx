@@ -4,9 +4,8 @@ import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { AppPage } from './declarations';
 
-import Menu from './components/Menu';
-import Home from './pages/Home';
-import List from './pages/List';
+import ChecklistSummaryList from './components/ChecklistSummaryList';
+import Checklist from './pages/Checklist';
 import { home, list } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
@@ -30,30 +29,24 @@ import './theme/variables.css';
 
 const appPages: AppPage[] = [
   {
-    title: 'Home',
-    url: '/home',
-    icon: home
-  },
-  {
     title: 'List',
-    url: '/home/list',
+    url: '/',
     icon: list
   }
 ];
 
-const App: React.FC = () => (
+const BtrApp: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonSplitPane contentId="main">
-        <Menu appPages={appPages} />
+        <ChecklistSummaryList appPages={appPages} />
         <IonRouterOutlet id="main">
-          <Route path="/home" component={Home} exact={true} />
-          <Route path="/home/list" component={List} exact={true} />
-          <Route path="/" render={() => <Redirect to="/home" exact={true} /> } />
+          <Route path="/checklist/:checklistId" component={Checklist} exact={true} />
+          <Route path="/" render={() => <Redirect to="/checklist" exact={true} /> } />
         </IonRouterOutlet>
       </IonSplitPane>
     </IonReactRouter>
   </IonApp>
 );
 
-export default App;
+export default BtrApp;

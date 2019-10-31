@@ -18,7 +18,7 @@ interface MenuProps extends RouteComponentProps {
   appPages: AppPage[];
 }
 
-const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
+const ChecklistSummaryList: React.FunctionComponent<MenuProps> = ({ appPages }) => (
   <IonMenu contentId="main" type="overlay">
     <IonHeader>
       <IonToolbar>
@@ -42,4 +42,4 @@ const Menu: React.FunctionComponent<MenuProps> = ({ appPages }) => (
   </IonMenu>
 );
 
-export default withRouter(Menu);
+export default withRouter(ChecklistSummaryList);

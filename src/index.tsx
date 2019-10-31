@@ -1,5 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import BtrApp from './BtrApp';
 
-ReactDOM.render(<App />, document.getElementById('root'));
+ReactDOM.render(<BtrApp />, document.getElementById('root'));

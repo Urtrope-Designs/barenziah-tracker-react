@@ -8,7 +8,7 @@ interface StoneSummaryEntryProps {
 
 const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone }) => {
     return (
-        <IonItem key={stone.stoneId}>
+        <IonItem>
             <IonCheckbox
                 slot="start"
                 checked={stone.isFound}

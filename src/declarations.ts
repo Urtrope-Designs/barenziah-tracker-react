@@ -1,7 +1,7 @@
-export interface AppPage {
-  url: string;
-  icon: object;
-  title: string;
+export interface ChecklistSummary {
+  checklistId: string;
+  checklistName: string;
+  numStonesToFind: number;
 }
 
 export interface StoredChecklist {

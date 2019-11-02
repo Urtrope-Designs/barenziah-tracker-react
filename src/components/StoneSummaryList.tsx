@@ -9,7 +9,7 @@ interface StoneSummaryListProps {
 
 const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations}) => {
     const stones = stoneLocations.map(stonLoc => {
-        return <StoneSummaryEntry stone={stonLoc}/>;
+        return <StoneSummaryEntry key={stonLoc.stoneId} stone={stonLoc}/>;
     })
 
     return <IonList>{stones}</IonList>;

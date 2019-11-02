@@ -1,9 +1,6 @@
 import {
   IonContent,
   IonHeader,
-  IonIcon,
-  IonItem,
-  IonLabel,
   IonList,
   IonMenu,
   IonMenuToggle,
@@ -12,13 +9,14 @@ import {
 } from '@ionic/react';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { AppPage } from '../declarations';
+import { ChecklistSummary } from '../declarations';
+import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
 interface MenuProps extends RouteComponentProps {
-  appPages: AppPage[];
+  checklistSummaries: ChecklistSummary[];
 }
 
-const ChecklistSummaryList: React.FunctionComponent<MenuProps> = ({ appPages }) => (
+const ChecklistSummaryList: React.FunctionComponent<MenuProps> = ({ checklistSummaries }) => (
   <IonMenu contentId="main" type="overlay">
     <IonHeader>
       <IonToolbar>
@@ -27,13 +25,10 @@ const ChecklistSummaryList: React.FunctionComponent<MenuProps> = ({ appPages }) 
     </IonHeader>
     <IonContent>
       <IonList>
-        {appPages.map((appPage, index) => {
+        {checklistSummaries.map((checklistSummaryEntry) => {
           return (
-            <IonMenuToggle key={index} autoHide={false}>
-              <IonItem routerLink={appPage.url} routerDirection="none">
-                <IonIcon slot="start" icon={appPage.icon} />
-                <IonLabel>{appPage.title}</IonLabel>
-              </IonItem>
+            <IonMenuToggle key={checklistSummaryEntry.checklistId} autoHide={false}>
+              <ChecklistSummaryEntry checklistSummary={checklistSummaryEntry} />
             </IonMenuToggle>
           );
         })}

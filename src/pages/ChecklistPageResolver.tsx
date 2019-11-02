@@ -7,14 +7,20 @@ interface ChecklistPageResolverProps extends RouteComponentProps<{
     checklistId: string;
 }> {
     userChecklistsMap: Map<string, StoneChecklist>;
+    toggleStoneFoundStatus(checklistId: string, stoneId: number): any;
 }
 
-const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, userChecklistsMap}) => {
+const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, userChecklistsMap, toggleStoneFoundStatus}) => {
     const currentChecklist = userChecklistsMap.get(match.params.checklistId);
     if (currentChecklist === undefined) {
         return <Redirect to="/" exact={true} />;
     }
-    return <ChecklistPage checklistId={match.params.checklistId} checklist={currentChecklist} />;
+    return (
+        <ChecklistPage
+            checklist={currentChecklist}
+            toggleStoneFoundStatus={(stoneId: number) => toggleStoneFoundStatus(match.params.checklistId, stoneId)}
+        />
+    );
 }
 
 export default ChecklistPageResolver;

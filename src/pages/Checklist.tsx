@@ -4,11 +4,16 @@ import { StoneChecklist } from '../declarations';
 import StoneSummaryList from '../components/StoneSummaryList';
 
 interface ChecklistPageProps {
-  checklistId: string;
   checklist: StoneChecklist;
+  toggleStoneFoundStatus(stoneId: number): any;
 }
 
-const ChecklistPage: React.FC<ChecklistPageProps> = ({checklistId, checklist}) => {
+function hashChecklist(checklist: StoneChecklist): string {
+  const hash = checklist.stoneLocations.filter(stonLoc => stonLoc.isFound).map(stonLoc => stonLoc.stoneId).join(',');
+  return hash;
+}
+
+const ChecklistPage: React.FC<ChecklistPageProps> = ({checklist, toggleStoneFoundStatus}) => {
   return (
     <IonPage>
       <IonHeader>
@@ -21,7 +26,7 @@ const ChecklistPage: React.FC<ChecklistPageProps> = ({checklistId, checklist}) =
       </IonHeader>
 
       <IonContent>
-        <StoneSummaryList stoneLocations={checklist.stoneLocations} />
+        <StoneSummaryList key={hashChecklist(checklist)} stoneLocations={checklist.stoneLocations} toggleStoneFoundStatus={toggleStoneFoundStatus} />
       </IonContent>
     </IonPage>
   );

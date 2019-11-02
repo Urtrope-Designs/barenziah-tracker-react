@@ -30,62 +30,87 @@ import ChecklistPageResolver from './pages/ChecklistPageResolver';
 const stoneLocations = STONE_LIST;
 
 const userChecklistsMap: Map<string, StoneChecklist> = new Map([
-  [
-    '' + (new Date().getTime() - 1000),
-    {
-      checklistName: 'Theo Seannarson',
-      stoneLocations: stoneLocations.map(stone => {
-        const stonLoc: StoneLocation = {...stone, isFound: (stone.stoneId % 3 === 0)};
-        return stonLoc;
-      }),
-    },
-  ],
-  [
-    '' + (new Date().getTime() - 500),
-    {
-      checklistName: 'Aviva Stormbow',
-      stoneLocations: stoneLocations.map(stone => {
-        const stonLoc: StoneLocation = {...stone, isFound: (stone.stoneId % 5 === 0)};
-        return stonLoc;
-      }),
-    },
-  ],
-  [
-    '' + (new Date().getTime()),
-    {
-      checklistName: 'Saoirse Shannonsdottir',
-      stoneLocations: stoneLocations.map(stone => {
-        const stonLoc: StoneLocation = {...stone, isFound: (stone.stoneId === 7 || stone.stoneId === 21)};
-        return stonLoc;
-      }),
-    },
-  ]
+    [
+        '' + (new Date().getTime() - 1000),
+        {
+            checklistName: 'Theo Seannarson',
+            stoneLocations: stoneLocations.map(stone => {
+                const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId % 3 === 0) };
+                return stonLoc;
+            }),
+        },
+    ],
+    [
+        '' + (new Date().getTime() - 500),
+        {
+            checklistName: 'Aviva Stormbow',
+            stoneLocations: stoneLocations.map(stone => {
+                const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId % 5 === 0) };
+                return stonLoc;
+            }),
+        },
+    ],
+    [
+        '' + (new Date().getTime()),
+        {
+            checklistName: 'Saoirse Shannonsdottir',
+            stoneLocations: stoneLocations.map(stone => {
+                const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId === 7 || stone.stoneId === 21) };
+                return stonLoc;
+            }),
+        },
+    ]
 ]);
 
-const checklistSummaries: ChecklistSummary[] = [];
-userChecklistsMap.forEach((checklist, checklistId) => {
-  const checklistSummary: ChecklistSummary = {
-    checklistId,
-    checklistName: checklist.checklistName,
-    numStonesToFind: STONE_LIST.length - checklist.stoneLocations.reduce<number>((total, curStonLoc) => curStonLoc.isFound ? ++total : total, 0),
-  };
-  checklistSummaries.push(checklistSummary);
-})
+function getChecklistSummaries(): ChecklistSummary[] {
+    const summaries: ChecklistSummary[] = [];
+    userChecklistsMap.forEach((checklist, checklistId) => {
+        const checklistSummary: ChecklistSummary = {
+            checklistId,
+            checklistName: checklist.checklistName,
+            numStonesToFind: STONE_LIST.length - checklist.stoneLocations.reduce<number>((total, curStonLoc) => curStonLoc.isFound ? ++total : total, 0),
+        };
+        summaries.push(checklistSummary);
+    });
+    return summaries;
+};
+
+function toggleStoneFoundStatus(checklistId: string, stoneId: number) {
+    const curList = userChecklistsMap.get(checklistId);
+    if (!curList) {
+        console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
+        return;
+    }
+
+    const curStonLoc = curList.stoneLocations.find(stonLoc => stonLoc.stoneId === stoneId);
+    if (!curStonLoc) {
+        console.error(`toggleStoneFoundStatus() invalid stoneId: ${stoneId}`);
+        return;
+    }
+
+    curStonLoc.isFound = !curStonLoc.isFound;
+}
 
 const BtrApp: React.FC = () => {
-  return (
-    <IonApp>
-      <IonReactRouter>
-        <IonSplitPane contentId="main">
-          <ChecklistSummaryList checklistSummaries={checklistSummaries} />
-          <IonRouterOutlet id="main">
-            <Route path="/checklist/:checklistId" render={(props) => <ChecklistPageResolver {...props} userChecklistsMap={userChecklistsMap}/> } exact={true} />
-            <Route path="/" render={() => <Redirect to={'/checklist/' + userChecklistsMap.keys().next().value} exact={true} /> } />
-          </IonRouterOutlet>
-        </IonSplitPane>
-      </IonReactRouter>
-    </IonApp>
-  );
+    return (
+        <IonApp>
+            <IonReactRouter>
+                <IonSplitPane contentId="main">
+                    <ChecklistSummaryList checklistSummaries={getChecklistSummaries()} />
+                    <IonRouterOutlet id="main">
+                        <Route
+                            path="/checklist/:checklistId"
+                            render={(props) => {
+                                return <ChecklistPageResolver {...props} userChecklistsMap={userChecklistsMap} toggleStoneFoundStatus={toggleStoneFoundStatus} />
+                            }}
+                            exact={true}
+                        />
+                        <Route path="/" render={() => <Redirect to={'/checklist/' + userChecklistsMap.keys().next().value} exact={true} />} />
+                    </IonRouterOutlet>
+                </IonSplitPane>
+            </IonReactRouter>
+        </IonApp>
+    );
 };
 
 export default BtrApp;

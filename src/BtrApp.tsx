@@ -2,9 +2,12 @@ import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ChecklistSummary, StoneChecklist, StoneLocation } from './declarations';
 
+import { ChecklistSummary, StoneChecklist } from './declarations';
 import ChecklistSummaryList from './components/ChecklistSummaryList';
+import { STONE_LIST } from './util/stone-list';
+import ChecklistPageResolver from './pages/ChecklistPageResolver';
+import { userChecklistsMap } from './util/user-checklists-map';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -24,47 +27,10 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import { STONE_LIST } from './util/stone-list';
-import ChecklistPageResolver from './pages/ChecklistPageResolver';
 
-const stoneLocations = STONE_LIST;
-
-const userChecklistsMap: Map<string, StoneChecklist> = new Map([
-    [
-        '' + (new Date().getTime() - 1000),
-        {
-            checklistName: 'Theo Seannarson',
-            stoneLocations: stoneLocations.map(stone => {
-                const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId % 3 === 0) };
-                return stonLoc;
-            }),
-        },
-    ],
-    [
-        '' + (new Date().getTime() - 500),
-        {
-            checklistName: 'Aviva Stormbow',
-            stoneLocations: stoneLocations.map(stone => {
-                const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId % 5 === 0) };
-                return stonLoc;
-            }),
-        },
-    ],
-    [
-        '' + (new Date().getTime()),
-        {
-            checklistName: 'Saoirse Shannonsdottir',
-            stoneLocations: stoneLocations.map(stone => {
-                const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId === 7 || stone.stoneId === 21) };
-                return stonLoc;
-            }),
-        },
-    ]
-]);
-
-function getChecklistSummaries(): ChecklistSummary[] {
+function getChecklistSummaries(checklistsMap: Map<string, StoneChecklist>): ChecklistSummary[] {
     const summaries: ChecklistSummary[] = [];
-    userChecklistsMap.forEach((checklist, checklistId) => {
+    checklistsMap.forEach((checklist, checklistId) => {
         const checklistSummary: ChecklistSummary = {
             checklistId,
             checklistName: checklist.checklistName,
@@ -75,42 +41,63 @@ function getChecklistSummaries(): ChecklistSummary[] {
     return summaries;
 };
 
-function toggleStoneFoundStatus(checklistId: string, stoneId: number) {
-    const curList = userChecklistsMap.get(checklistId);
-    if (!curList) {
-        console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
-        return;
-    }
-
-    const curStonLoc = curList.stoneLocations.find(stonLoc => stonLoc.stoneId === stoneId);
-    if (!curStonLoc) {
-        console.error(`toggleStoneFoundStatus() invalid stoneId: ${stoneId}`);
-        return;
-    }
-
-    curStonLoc.isFound = !curStonLoc.isFound;
+interface BtrAppState {
+    userChecklistsMap: Map<string, StoneChecklist>;
 }
 
-const BtrApp: React.FC = () => {
-    return (
-        <IonApp>
-            <IonReactRouter>
-                <IonSplitPane contentId="main">
-                    <ChecklistSummaryList checklistSummaries={getChecklistSummaries()} />
-                    <IonRouterOutlet id="main">
-                        <Route
-                            path="/checklist/:checklistId"
-                            render={(props) => {
-                                return <ChecklistPageResolver {...props} userChecklistsMap={userChecklistsMap} toggleStoneFoundStatus={toggleStoneFoundStatus} />
-                            }}
-                            exact={true}
-                        />
-                        <Route path="/" render={() => <Redirect to={'/checklist/' + userChecklistsMap.keys().next().value} exact={true} />} />
-                    </IonRouterOutlet>
-                </IonSplitPane>
-            </IonReactRouter>
-        </IonApp>
-    );
+class BtrApp extends React.Component<any, BtrAppState> {
+    constructor(props: any) {
+        super(props);
+        this.state = {userChecklistsMap: userChecklistsMap};
+    }
+
+    toggleStoneFoundStatus = (checklistId: string, stoneId: number) => {
+        this.setState((state: BtrAppState) => {
+            const curList = state.userChecklistsMap.get(checklistId);
+            if (!curList) {
+                console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
+                return;
+            }
+
+            const newList: StoneChecklist = {
+                checklistName: curList.checklistName,
+                stoneLocations: curList.stoneLocations.map(stonLoc => {
+                    if (stonLoc.stoneId === stoneId) {
+                        return {...stonLoc, isFound: !stonLoc.isFound};
+                    } else {
+                        return {...stonLoc}
+                    }
+                })
+            }
+
+            const newChecklistsMap = new Map(state.userChecklistsMap);
+            newChecklistsMap.set(checklistId, newList);
+            
+            return {...state, userChecklistsMap: newChecklistsMap};
+        });
+    }
+
+    render() {
+        return (
+            <IonApp>
+                <IonReactRouter>
+                    <IonSplitPane contentId="main">
+                        <ChecklistSummaryList checklistSummaries={getChecklistSummaries(this.state.userChecklistsMap)} />
+                        <IonRouterOutlet id="main">
+                            <Route
+                                path="/checklist/:checklistId"
+                                render={(props) => {
+                                    return <ChecklistPageResolver {...props} userChecklistsMap={this.state.userChecklistsMap} toggleStoneFoundStatus={this.toggleStoneFoundStatus} />
+                                }}
+                                exact={true}
+                            />
+                            <Route path="/" render={() => <Redirect to={'/checklist/' + userChecklistsMap.keys().next().value} exact={true} />} />
+                        </IonRouterOutlet>
+                    </IonSplitPane>
+                </IonReactRouter>
+            </IonApp>
+        );
+    }
 };
 
 export default BtrApp;

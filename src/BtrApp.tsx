@@ -7,7 +7,7 @@ import { ChecklistSummary, StoneChecklist } from './declarations';
 import ChecklistSummaryList from './components/ChecklistSummaryList';
 import { STONE_LIST } from './util/stone-list';
 import ChecklistPageResolver from './pages/ChecklistPageResolver';
-import { userChecklistsMap } from './util/user-checklists-map';
+import { userChecklists } from './util/user-checklists-map';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -28,38 +28,39 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-function getChecklistSummaries(checklistsMap: Map<string, StoneChecklist>): ChecklistSummary[] {
-    const summaries: ChecklistSummary[] = [];
-    checklistsMap.forEach((checklist, checklistId) => {
+function getChecklistSummaries(checklists: StoneChecklist[]): ChecklistSummary[] {
+     const summaries = checklists.map(checklist => {
         const checklistSummary: ChecklistSummary = {
-            checklistId,
+            checklistId: checklist.checklistId,
             checklistName: checklist.checklistName,
             numStonesToFind: STONE_LIST.length - checklist.stoneLocations.reduce<number>((total, curStonLoc) => curStonLoc.isFound ? ++total : total, 0),
         };
-        summaries.push(checklistSummary);
+        return checklistSummary
     });
     return summaries;
 };
 
 interface BtrAppState {
-    userChecklistsMap: Map<string, StoneChecklist>;
+    userChecklists: StoneChecklist[];
 }
 
 class BtrApp extends React.Component<any, BtrAppState> {
     constructor(props: any) {
         super(props);
-        this.state = {userChecklistsMap: userChecklistsMap};
+        this.state = {userChecklists: userChecklists};
     }
 
     toggleStoneFoundStatus = (checklistId: string, stoneId: number) => {
         this.setState((state: BtrAppState) => {
-            const curList = state.userChecklistsMap.get(checklistId);
-            if (!curList) {
+            const curListIndex = state.userChecklists.findIndex(checklist => checklist.checklistId === checklistId);
+            if (curListIndex === -1) {
                 console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
                 return;
             }
+            const curList = state.userChecklists[curListIndex];
 
             const newList: StoneChecklist = {
+                checklistId: checklistId,
                 checklistName: curList.checklistName,
                 stoneLocations: curList.stoneLocations.map(stonLoc => {
                     if (stonLoc.stoneId === stoneId) {
@@ -70,10 +71,10 @@ class BtrApp extends React.Component<any, BtrAppState> {
                 })
             }
 
-            const newChecklistsMap = new Map(state.userChecklistsMap);
-            newChecklistsMap.set(checklistId, newList);
+            const newChecklists = [...state.userChecklists];
+            newChecklists[curListIndex] = newList;
             
-            return {...state, userChecklistsMap: newChecklistsMap};
+            return {...state, userChecklists: newChecklists};
         });
     }
 
@@ -82,16 +83,16 @@ class BtrApp extends React.Component<any, BtrAppState> {
             <IonApp>
                 <IonReactRouter>
                     <IonSplitPane contentId="main">
-                        <ChecklistSummaryList checklistSummaries={getChecklistSummaries(this.state.userChecklistsMap)} />
+                        <ChecklistSummaryList checklistSummaries={getChecklistSummaries(this.state.userChecklists)} />
                         <IonRouterOutlet id="main">
                             <Route
                                 path="/checklist/:checklistId"
                                 render={(props) => {
-                                    return <ChecklistPageResolver {...props} userChecklistsMap={this.state.userChecklistsMap} toggleStoneFoundStatus={this.toggleStoneFoundStatus} />
+                                    return <ChecklistPageResolver {...props} userChecklists={this.state.userChecklists} toggleStoneFoundStatus={this.toggleStoneFoundStatus} />
                                 }}
                                 exact={true}
                             />
-                            <Route path="/" render={() => <Redirect to={'/checklist/' + userChecklistsMap.keys().next().value} exact={true} />} />
+                            <Route path="/" render={() => <Redirect to={'/checklist/' + userChecklists[0].checklistId} exact={true} />} />
                         </IonRouterOutlet>
                     </IonSplitPane>
                 </IonReactRouter>

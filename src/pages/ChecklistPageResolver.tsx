@@ -6,12 +6,12 @@ import ChecklistPage from './Checklist';
 interface ChecklistPageResolverProps extends RouteComponentProps<{
     checklistId: string;
 }> {
-    userChecklistsMap: Map<string, StoneChecklist>;
+    userChecklists: StoneChecklist[];
     toggleStoneFoundStatus(checklistId: string, stoneId: number): any;
 }
 
-const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, userChecklistsMap, toggleStoneFoundStatus}) => {
-    const currentChecklist = userChecklistsMap.get(match.params.checklistId);
+const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, userChecklists, toggleStoneFoundStatus}) => {
+    const currentChecklist = userChecklists.find(checklist => checklist.checklistId === match.params.checklistId);
     if (currentChecklist === undefined) {
         return <Redirect to="/" exact={true} />;
     }

@@ -8,11 +8,6 @@ interface ChecklistPageProps {
   toggleStoneFoundStatus(stoneId: number): any;
 }
 
-function hashChecklist(checklist: StoneChecklist): string {
-  const hash = checklist.stoneLocations.filter(stonLoc => stonLoc.isFound).map(stonLoc => stonLoc.stoneId).join(',');
-  return hash;
-}
-
 const ChecklistPage: React.FC<ChecklistPageProps> = ({checklist, toggleStoneFoundStatus}) => {
   return (
     <IonPage>
@@ -26,7 +21,7 @@ const ChecklistPage: React.FC<ChecklistPageProps> = ({checklist, toggleStoneFoun
       </IonHeader>
 
       <IonContent>
-        <StoneSummaryList key={hashChecklist(checklist)} stoneLocations={checklist.stoneLocations} toggleStoneFoundStatus={toggleStoneFoundStatus} />
+        <StoneSummaryList key={checklist.checklistId} stoneLocations={checklist.stoneLocations} toggleStoneFoundStatus={toggleStoneFoundStatus} />
       </IonContent>
     </IonPage>
   );

@@ -78,6 +78,28 @@ class BtrApp extends React.Component<any, BtrAppState> {
         });
     }
 
+    updateChecklistName = (checklistId: string, newChecklistname: string) => {
+        this.setState((state: BtrAppState) => {
+            const curListIndex = state.userChecklists.findIndex(checklist => checklist.checklistId === checklistId);
+            if (curListIndex === -1) {
+                console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
+                return;
+            }
+            const curList = state.userChecklists[curListIndex];
+
+            const newList: StoneChecklist = {
+                checklistId: checklistId,
+                checklistName: newChecklistname,
+                stoneLocations: curList.stoneLocations,
+            }
+
+            const newChecklists = [...state.userChecklists];
+            newChecklists[curListIndex] = newList;
+            
+            return {...state, userChecklists: newChecklists};
+        });
+    }
+
     render() {
         return (
             <IonApp>
@@ -88,7 +110,14 @@ class BtrApp extends React.Component<any, BtrAppState> {
                             <Route
                                 path="/checklist/:checklistId"
                                 render={(props) => {
-                                    return <ChecklistPageResolver {...props} userChecklists={this.state.userChecklists} toggleStoneFoundStatus={this.toggleStoneFoundStatus} />
+                                    return (
+                                        <ChecklistPageResolver
+                                            {...props}
+                                            userChecklists={this.state.userChecklists}
+                                            toggleStoneFoundStatus={this.toggleStoneFoundStatus}
+                                            updateChecklistName={this.updateChecklistName}
+                                        />
+                                    )
                                 }}
                                 exact={true}
                             />

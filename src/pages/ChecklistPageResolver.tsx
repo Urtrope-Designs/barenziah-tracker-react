@@ -8,9 +8,10 @@ interface ChecklistPageResolverProps extends RouteComponentProps<{
 }> {
     userChecklists: StoneChecklist[];
     toggleStoneFoundStatus(checklistId: string, stoneId: number): any;
+    updateChecklistName(checklistId: string, newChecklistName: string): any;
 }
 
-const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, userChecklists, toggleStoneFoundStatus}) => {
+const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, userChecklists, toggleStoneFoundStatus, updateChecklistName}) => {
     const currentChecklist = userChecklists.find(checklist => checklist.checklistId === match.params.checklistId);
     if (currentChecklist === undefined) {
         return <Redirect to="/" exact={true} />;
@@ -19,6 +20,7 @@ const ChecklistPageResolver: React.FC<ChecklistPageResolverProps> = ({match, use
         <ChecklistPage
             checklist={currentChecklist}
             toggleStoneFoundStatus={(stoneId: number) => toggleStoneFoundStatus(match.params.checklistId, stoneId)}
+            updateChecklistName={(newChecklistName: string) => updateChecklistName(match.params.checklistId, newChecklistName)}
         />
     );
 }

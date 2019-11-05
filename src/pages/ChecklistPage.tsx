@@ -16,48 +16,38 @@ interface ChecklistPageState {
 }
 
 class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageState> {
-  _checklistBlurToCancelTimeoutId: number | null = null;
+  checklistNameEditSaveButton: React.RefObject<HTMLIonButtonElement>;
 
   constructor(props: ChecklistPageProps) {
     super(props);
     this.state = {
       checklistNameEdit: props.checklist.checklistName,
     }
+
+    this.checklistNameEditSaveButton = React.createRef();
   }
 
   componentDidUpdate(prevProps: ChecklistPageProps) {
     if (this.props.checklist.checklistId !== prevProps.checklist.checklistId) {
-      if (!!this._checklistBlurToCancelTimeoutId) {
-        window.clearTimeout(this._checklistBlurToCancelTimeoutId);
-      }
       this.setState({checklistNameEdit: this.props.checklist.checklistName});
     }
   }
 
   handleChecklistNameInputChange = (event: CustomEvent) => {
-    console.log('name input onIonChange');
     this.setState({checklistNameEdit: (event.target as HTMLInputElement).value});
   }
 
   handleChecklistNameInputBlur = () => {
-    const timeoutId: number = window.setTimeout(() => {
-      console.log('timeout finished!');
-      this.setState((_state, props) => {
-        const fallbackChecklistNameEdit = props.checklist.checklistName;
-        return {checklistNameEdit: fallbackChecklistNameEdit};
-      })
-    }, 200);
-    console.log('setting blur timeout: ', timeoutId);
-    this._checklistBlurToCancelTimeoutId = timeoutId;
-  }
-
-  handleChecklistNameInputSaveClick = () => {
-    // is this checking too soon? maybe setstate hasn't completed yet.
-    console.log('handle save click, timeoutid: ', this._checklistBlurToCancelTimeoutId);
-    if (!!this._checklistBlurToCancelTimeoutId) {
-      window.clearTimeout(this._checklistBlurToCancelTimeoutId);
-    }
-    this.props.updateChecklistName(this.state.checklistNameEdit);
+    document.addEventListener('click', (event: MouseEvent) => {
+      if (event.target === this.checklistNameEditSaveButton.current) {
+        this.props.updateChecklistName(this.state.checklistNameEdit);
+      } else {
+        this.setState((_state, props) => {
+          const fallbackChecklistNameEdit = props.checklist.checklistName;
+          return {checklistNameEdit: fallbackChecklistNameEdit};
+        });
+      }
+    }, {once: true})
   }
 
   render() {
@@ -78,9 +68,9 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
             </IonTitle>
             <IonButtons slot="end">
               <IonButton
+                ref={this.checklistNameEditSaveButton}
                 fill="clear"
                 disabled={this.state.checklistNameEdit === this.props.checklist.checklistName}
-                onClick={this.handleChecklistNameInputSaveClick}
               >Save</IonButton>
             </IonButtons>
           </IonToolbar>

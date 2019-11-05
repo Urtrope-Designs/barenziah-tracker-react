@@ -38,16 +38,22 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
   }
 
   handleChecklistNameInputBlur = () => {
-    document.addEventListener('click', (event: MouseEvent) => {
-      if (event.target === this.checklistNameEditSaveButton.current) {
-        this.props.updateChecklistName(this.state.checklistNameEdit);
-      } else {
+    document.addEventListener('focusin', (event: FocusEvent) => {
+      if (event.target !== this.checklistNameEditSaveButton.current) {
         this.setState((_state, props) => {
           const fallbackChecklistNameEdit = props.checklist.checklistName;
           return {checklistNameEdit: fallbackChecklistNameEdit};
         });
+      } else {
+        document.addEventListener('focusin', (event: FocusEvent) => {
+          this.setState({checklistNameEdit: this.props.checklist.checklistName});
+        }, {once: true});
       }
     }, {once: true})
+  }
+
+  handleChecklistNameInputSave = () => {
+    this.props.updateChecklistName(this.state.checklistNameEdit);
   }
 
   render() {
@@ -71,6 +77,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
                 ref={this.checklistNameEditSaveButton}
                 fill="clear"
                 disabled={this.state.checklistNameEdit === this.props.checklist.checklistName}
+                onClick={this.handleChecklistNameInputSave}
               >Save</IonButton>
             </IonButtons>
           </IonToolbar>

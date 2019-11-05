@@ -1,7 +1,7 @@
 import React from 'react';
 import { RouteComponentProps, Redirect } from 'react-router';
 import { StoneChecklist } from '../declarations';
-import ChecklistPage from './Checklist';
+import ChecklistPage from './ChecklistPage';
 
 interface ChecklistPageResolverProps extends RouteComponentProps<{
     checklistId: string;

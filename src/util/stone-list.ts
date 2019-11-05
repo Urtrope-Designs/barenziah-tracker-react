@@ -1,10 +1,6 @@
-export interface StoneLocation {
-    stoneId: number;
-    locationName: string;
-    holdName: 'Eastmarch'|'Falkreath'|'Haafingar'|'Hjaalmarch'|'The Reach'|'The Rift'|'Whiterun'|'Winterhold';
-}
+import { StoneLocationData } from "../declarations";
 
-export const STONE_LIST: StoneLocation[] = [
+export const STONE_LIST: StoneLocationData[] = [
     {
         stoneId: 0,
         locationName: 'Ansilvund – Ansilvund Burial Chambers',

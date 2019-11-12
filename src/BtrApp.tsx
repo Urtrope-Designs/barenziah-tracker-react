@@ -3,11 +3,10 @@ import { Redirect, Route } from 'react-router-dom';
 import { IonApp, IonRouterOutlet, IonSplitPane } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
-import { ChecklistSummary, StoneChecklist } from './declarations';
+import { StoneChecklist } from './declarations';
 import ChecklistSummaryList from './components/ChecklistSummaryList';
-import { STONE_LIST } from './util/stone-list';
 import ChecklistPageResolver from './pages/ChecklistPageResolver';
-import { userChecklists } from './util/user-checklists-map';
+import { userChecklists, getChecklistSummaries, createNewStoneChecklist } from './util/user-checklists';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -27,18 +26,6 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
-
-function getChecklistSummaries(checklists: StoneChecklist[]): ChecklistSummary[] {
-     const summaries = checklists.map(checklist => {
-        const checklistSummary: ChecklistSummary = {
-            checklistId: checklist.checklistId,
-            checklistName: checklist.checklistName,
-            numStonesToFind: STONE_LIST.length - checklist.stoneLocations.reduce<number>((total, curStonLoc) => curStonLoc.isFound ? ++total : total, 0),
-        };
-        return checklistSummary
-    });
-    return summaries;
-};
 
 interface BtrAppState {
     userChecklists: StoneChecklist[];
@@ -100,12 +87,20 @@ class BtrApp extends React.Component<any, BtrAppState> {
         });
     }
 
+    addNewChecklist = (newChecklistName: string) => {
+        const newChecklist: StoneChecklist = createNewStoneChecklist(newChecklistName);
+        this.setState((state: BtrAppState) => {
+            const newChecklists = [...state.userChecklists, newChecklist];
+            return {userChecklists: newChecklists};
+        })
+    }
+
     render() {
         return (
             <IonApp>
                 <IonReactRouter>
                     <IonSplitPane contentId="main">
-                        <ChecklistSummaryList checklistSummaries={getChecklistSummaries(this.state.userChecklists)} />
+                        <ChecklistSummaryList checklistSummaries={getChecklistSummaries(this.state.userChecklists)} addNewChecklist={this.addNewChecklist} />
                         <IonRouterOutlet id="main">
                             <Route
                                 path="/checklist/:checklistId"

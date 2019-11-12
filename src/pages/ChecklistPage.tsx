@@ -37,19 +37,24 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     this.setState({checklistNameEdit: (event.target as HTMLInputElement).value});
   }
 
+  handleChecklistNameInputFocusSteal = (event: FocusEvent) => {
+    if (event.target === this.checklistNameEditSaveButton.current) {
+      document.addEventListener('focusin', this.handleChecklistNameInputFocusSteal, {once: true});
+    } else {
+      this.setState({checklistNameEdit: this.props.checklist.checklistName});
+      document.removeEventListener('click', this.handleChecklistNameInputClickaway)
+    }
+  }
+  handleChecklistNameInputClickaway = (event: MouseEvent) => {
+    if (event.target !== this.checklistNameEditSaveButton.current) {
+      this.setState({checklistNameEdit: this.props.checklist.checklistName});
+      document.removeEventListener('focusin', this.handleChecklistNameInputFocusSteal);
+    }
+  }
+
   handleChecklistNameInputBlur = () => {
-    document.addEventListener('focusin', (event: FocusEvent) => {
-      if (event.target !== this.checklistNameEditSaveButton.current) {
-        this.setState((_state, props) => {
-          const fallbackChecklistNameEdit = props.checklist.checklistName;
-          return {checklistNameEdit: fallbackChecklistNameEdit};
-        });
-      } else {
-        document.addEventListener('focusin', () => {
-          this.setState({checklistNameEdit: this.props.checklist.checklistName});
-        }, {once: true});
-      }
-    }, {once: true})
+    document.addEventListener('focusin', this.handleChecklistNameInputFocusSteal, {once: true});
+    document.addEventListener('click', this.handleChecklistNameInputClickaway, {once: true});
   }
 
   handleChecklistNameInputKeypress = (event: React.KeyboardEvent<HTMLIonInputElement>) => {

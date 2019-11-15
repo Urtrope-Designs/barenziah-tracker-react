@@ -13,12 +13,12 @@ import {
 } from '@ionic/react';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ChecklistSummary } from '../declarations';
+import { ChecklistSummary, StoneChecklist } from '../declarations';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
-  addNewChecklist(checklistName: string): any;
+  addNewChecklist(checklistName: string, navCallback?: (checklist: StoneChecklist) => any): any;
 }
 
 interface ChecklistSummaryListState {
@@ -38,8 +38,11 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
   }
 
   handleNewChecklistInputSave = () => {
-    this.props.addNewChecklist(this.state.newChecklistName);
-    this.setState({newChecklistName: ''});
+    this.props.addNewChecklist(this.state.newChecklistName, (newChecklist: StoneChecklist) => {
+      this.setState({newChecklistName: ''});
+      this.props.history.push('/checklist/' + newChecklist.checklistId);
+
+    });
   }
 
   handleNewChecklistInputKeypress = (event: React.KeyboardEvent<HTMLIonInputElement>) => {
@@ -68,7 +71,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
             })}
             <IonItem>
               <IonInput
-                placeholder="New List"
+                placeholder="New Character"
                 value={this.state.newChecklistName}
                 onIonChange={this.handleNewChecklistNameChange}
                 onKeyPress={this.handleNewChecklistInputKeypress}

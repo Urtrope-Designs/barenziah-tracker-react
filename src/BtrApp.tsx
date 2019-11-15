@@ -61,7 +61,7 @@ class BtrApp extends React.Component<any, BtrAppState> {
             const newChecklists = [...state.userChecklists];
             newChecklists[curListIndex] = newList;
             
-            return {...state, userChecklists: newChecklists};
+            return {userChecklists: newChecklists};
         });
     }
 
@@ -83,16 +83,19 @@ class BtrApp extends React.Component<any, BtrAppState> {
             const newChecklists = [...state.userChecklists];
             newChecklists[curListIndex] = newList;
             
-            return {...state, userChecklists: newChecklists};
+            return {userChecklists: newChecklists};
         });
     }
 
-    addNewChecklist = (newChecklistName: string) => {
+    addNewChecklist = (newChecklistName: string, navCallback?: (checklist: StoneChecklist) => any) => {
         const newChecklist: StoneChecklist = createNewStoneChecklist(newChecklistName);
         this.setState((state: BtrAppState) => {
             const newChecklists = [...state.userChecklists, newChecklist];
             return {userChecklists: newChecklists};
-        })
+        });
+        if (!!navCallback) {
+            navCallback(newChecklist);
+        }
     }
 
     render() {

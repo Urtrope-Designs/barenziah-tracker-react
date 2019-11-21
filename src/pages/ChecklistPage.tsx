@@ -6,6 +6,7 @@ import StoneSummaryList from '../components/StoneSummaryList';
 import './ChecklistPage.css';
 
 interface ChecklistPageProps {
+  pageElemId?: string;
   checklist: StoneChecklist;
   toggleStoneFoundStatus(stoneId: number): any;
   updateChecklistName(newChecklistName: string): any;
@@ -70,7 +71,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
 
   render() {
     return (
-      <IonPage>
+      <IonPage id={this.props.pageElemId}>
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">

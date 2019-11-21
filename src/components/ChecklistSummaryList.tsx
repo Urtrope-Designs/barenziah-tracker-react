@@ -19,6 +19,7 @@ import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
   addNewChecklist(checklistName: string, navCallback?: (checklist: StoneChecklist) => any): any;
+  activateChecklist(checklistId: string): any;
 }
 
 interface ChecklistSummaryListState {
@@ -38,11 +39,8 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
   }
 
   handleNewChecklistInputSave = () => {
-    this.props.addNewChecklist(this.state.newChecklistName, (newChecklist: StoneChecklist) => {
-      this.setState({newChecklistName: ''});
-      this.props.history.push('/checklist/' + newChecklist.checklistId);
-
-    });
+    this.props.addNewChecklist(this.state.newChecklistName);
+    this.setState({newChecklistName: ''});
   }
 
   handleNewChecklistInputKeypress = (event: React.KeyboardEvent<HTMLIonInputElement>) => {
@@ -65,7 +63,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
             {this.props.checklistSummaries.map((checklistSummaryEntry) => {
               return (
                 <IonMenuToggle key={checklistSummaryEntry.checklistId} autoHide={false}>
-                  <ChecklistSummaryEntry checklistSummary={checklistSummaryEntry} />
+                  <ChecklistSummaryEntry checklistSummary={checklistSummaryEntry} entryClicked={this.props.activateChecklist} />
                 </IonMenuToggle>
               );
             })}
@@ -77,11 +75,13 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
                 onKeyPress={this.handleNewChecklistInputKeypress}
               />
               <IonButtons slot="end">
-                <IonButton
-                  fill="clear"
-                  disabled={this.state.newChecklistName === ''}
-                  onClick={this.handleNewChecklistInputSave}
-                >Save</IonButton>
+                <IonMenuToggle autoHide={false}>
+                  <IonButton
+                    fill="clear"
+                    disabled={this.state.newChecklistName === ''}
+                    onClick={this.handleNewChecklistInputSave}
+                    >Save</IonButton>
+                </IonMenuToggle>
               </IonButtons>
             </IonItem>
           </IonList>

@@ -27,6 +27,8 @@ interface ChecklistSummaryListState {
 }
 
 class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, ChecklistSummaryListState> {
+  private menuRef = React.createRef<HTMLIonMenuElement>();
+
   constructor(props: ChecklistSummaryListProps) {
     super(props);
     this.state = {
@@ -47,12 +49,16 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
     if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
       this.handleNewChecklistInputSave();
       event.target.blur();
+      const menu = this.menuRef.current;
+      if (!!menu) {
+        menu.close();
+      }
     }
   }
 
   render() {
     return (
-      <IonMenu contentId="main" type="overlay">
+      <IonMenu contentId="main" type="overlay" ref={this.menuRef}>
         <IonHeader>
           <IonToolbar>
             <IonTitle>Menu</IonTitle>

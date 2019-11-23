@@ -11,20 +11,26 @@ import {
   IonButtons,
   IonButton,
   IonIcon,
+  IonItemSliding,
+  IonItemOptions,
+  IonItemOption,
+  IonAlert,
 } from '@ionic/react';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import { ChecklistSummary, StoneChecklist } from '../declarations';
+import { ChecklistSummary } from '../declarations';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
-  addNewChecklist(checklistName: string, navCallback?: (checklist: StoneChecklist) => any): any;
+  addNewChecklist(checklistName: string): any;
   activateChecklist(checklistId: string): any;
+  deleteChecklist(checklistId: string): any;
 }
 
 interface ChecklistSummaryListState {
   newChecklistName: string;
+  requestedDeleteChecklistId: string | null;
 }
 
 class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, ChecklistSummaryListState> {
@@ -33,7 +39,8 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
   constructor(props: ChecklistSummaryListProps) {
     super(props);
     this.state = {
-      newChecklistName: ''
+      newChecklistName: '',
+      requestedDeleteChecklistId: null,
     };
   }
 
@@ -57,9 +64,13 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
     }
   }
 
+  confirmDeleteChecklistSummary = (checklistId: string) => {
+    this.setState({requestedDeleteChecklistId: checklistId});
+  }
+
   render() {
     return (
-      <IonMenu contentId="main" type="overlay" ref={this.menuRef}>
+      <IonMenu contentId="main" type="overlay" swipeGesture={false} ref={this.menuRef}>
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
@@ -74,9 +85,16 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
           <IonList>
             {this.props.checklistSummaries.map((checklistSummaryEntry) => {
               return (
-                <IonMenuToggle key={checklistSummaryEntry.checklistId} autoHide={false}>
-                  <ChecklistSummaryEntry checklistSummary={checklistSummaryEntry} entryClicked={this.props.activateChecklist} />
-                </IonMenuToggle>
+                <IonItemSliding key={checklistSummaryEntry.checklistId}>
+                  <IonMenuToggle autoHide={false}>
+                    <ChecklistSummaryEntry checklistSummary={checklistSummaryEntry} entryClicked={this.props.activateChecklist} />
+                  </IonMenuToggle>
+                  <IonItemOptions>
+                    <IonItemOption color="danger" onClick={() => this.confirmDeleteChecklistSummary(checklistSummaryEntry.checklistId)}>
+                      <IonIcon slot="icon-only" name="trash"></IonIcon>
+                    </IonItemOption>
+                  </IonItemOptions>
+                </IonItemSliding>
               );
             })}
             <IonItem>
@@ -97,6 +115,24 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
               </IonButtons>
             </IonItem>
           </IonList>
+          <IonAlert
+            isOpen={this.state.requestedDeleteChecklistId != null}
+            message={'Are you sure you want to delete this character\'s checklist?'}
+            buttons={[
+              {
+                text: 'Cancel',
+                role: 'cancel',
+                cssClass: 'secondary',
+              },
+              {
+                text: 'Delete',
+                handler: () => {
+                  this.props.deleteChecklist(this.state.requestedDeleteChecklistId || '');
+                  this.setState({requestedDeleteChecklistId: null});
+                },
+              }
+            ]}
+          />
         </IonContent>
       </IonMenu>
     )

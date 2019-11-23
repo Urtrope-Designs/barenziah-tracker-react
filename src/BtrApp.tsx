@@ -105,6 +105,22 @@ class BtrApp extends React.Component<any, BtrAppState> {
         })
     }
 
+    deleteChecklist = (checklistId: string) => {
+        this.setState((state) => {
+            const deletedChecklistIndex = state.userChecklists.findIndex(c => c.checklistId === checklistId);
+            const updatedChecklistsList = state.userChecklists;
+            if (deletedChecklistIndex !== -1) {
+                updatedChecklistsList.splice(deletedChecklistIndex, 1);
+            }
+
+            let updatedState: any = {userChecklists: updatedChecklistsList};
+            if (state.activeChecklistId === checklistId) {
+                updatedState.activeChecklistId = updatedChecklistsList[0].checklistId;
+            } 
+            return updatedState;
+        })
+    }
+
     render() {
         return (
             <IonApp>
@@ -114,6 +130,7 @@ class BtrApp extends React.Component<any, BtrAppState> {
                             checklistSummaries={getChecklistSummaries(this.state.userChecklists)}
                             addNewChecklist={this.addNewChecklist}
                             activateChecklist={this.activateChecklist}
+                            deleteChecklist={this.deleteChecklist}
                         />
                         <ChecklistPage
                             pageElemId="main"

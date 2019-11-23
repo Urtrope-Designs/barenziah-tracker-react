@@ -10,6 +10,7 @@ import {
   IonInput,
   IonButtons,
   IonButton,
+  IonIcon,
 } from '@ionic/react';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -61,6 +62,11 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
       <IonMenu contentId="main" type="overlay" ref={this.menuRef}>
         <IonHeader>
           <IonToolbar>
+            <IonButtons slot="start">
+              <IonMenuToggle autoHide={false}>
+                <IonButton><IonIcon name="close" slot="icon-only"></IonIcon></IonButton>
+              </IonMenuToggle>
+            </IonButtons>
             <IonTitle>Menu</IonTitle>
           </IonToolbar>
         </IonHeader>

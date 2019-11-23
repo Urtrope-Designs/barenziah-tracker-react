@@ -63,7 +63,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
         <IonHeader>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonMenuToggle autoHide={false}>
+              <IonMenuToggle>
                 <IonButton><IonIcon name="close" slot="icon-only"></IonIcon></IonButton>
               </IonMenuToggle>
             </IonButtons>

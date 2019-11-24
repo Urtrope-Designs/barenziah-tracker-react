@@ -118,6 +118,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
           <IonAlert
             isOpen={this.state.requestedDeleteChecklistId != null}
             message={'Are you sure you want to delete this character\'s checklist?'}
+            onDidDismiss={() => {this.setState({requestedDeleteChecklistId: null})}}
             buttons={[
               {
                 text: 'Cancel',
@@ -128,7 +129,6 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
                 text: 'Delete',
                 handler: () => {
                   this.props.deleteChecklist(this.state.requestedDeleteChecklistId || '');
-                  this.setState({requestedDeleteChecklistId: null});
                 },
               }
             ]}

@@ -16,6 +16,7 @@ import {
   IonItemOption,
   IonAlert,
 } from '@ionic/react';
+import { trash, close } from 'ionicons/icons';
 import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ChecklistSummary } from '../declarations';
@@ -75,7 +76,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
           <IonToolbar>
             <IonButtons slot="start">
               <IonMenuToggle>
-                <IonButton><IonIcon name="close" slot="icon-only"></IonIcon></IonButton>
+                <IonButton><IonIcon icon={close} slot="icon-only"></IonIcon></IonButton>
               </IonMenuToggle>
             </IonButtons>
             <IonTitle>Menu</IonTitle>
@@ -91,7 +92,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
                   </IonMenuToggle>
                   <IonItemOptions>
                     <IonItemOption color="danger" onClick={() => this.confirmDeleteChecklistSummary(checklistSummaryEntry.checklistId)}>
-                      <IonIcon slot="icon-only" name="trash"></IonIcon>
+                      <IonIcon slot="icon-only" icon={trash}></IonIcon>
                     </IonItemOption>
                   </IonItemOptions>
                 </IonItemSliding>

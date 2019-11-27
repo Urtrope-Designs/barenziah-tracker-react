@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter } from '@ionic/react';
 import React from 'react';
 import { StoneChecklist } from '../declarations';
 import StoneSummaryList from '../components/StoneSummaryList';
@@ -14,6 +14,7 @@ interface ChecklistPageProps {
 
 interface ChecklistPageState {
   checklistNameEdit: string;
+  hideCompletedStones: boolean;
 }
 
 class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageState> {
@@ -23,6 +24,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     super(props);
     this.state = {
       checklistNameEdit: props.checklist.checklistName,
+      hideCompletedStones: false,
     }
 
     this.checklistNameEditSaveButton = React.createRef();
@@ -30,7 +32,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
 
   componentDidUpdate(prevProps: ChecklistPageProps) {
     if (this.props.checklist.checklistId !== prevProps.checklist.checklistId) {
-      this.setState({checklistNameEdit: this.props.checklist.checklistName});
+      this.setState({checklistNameEdit: this.props.checklist.checklistName, hideCompletedStones: false});
     }
   }
 
@@ -69,6 +71,20 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     this.props.updateChecklistName(this.state.checklistNameEdit);
   }
 
+  toggleHideCompletedStones = () => {
+    this.setState(({hideCompletedStones}) => {
+      return {hideCompletedStones: !hideCompletedStones};
+    })
+  }
+
+  getVisibleStoneLocations = () => {
+    if (this.state.hideCompletedStones) {
+      return this.props.checklist.stoneLocations.filter(stonLoc => !stonLoc.isFound);
+    } else {
+      return this.props.checklist.stoneLocations;
+    }
+  }
+
   render() {
     return (
       <IonPage id={this.props.pageElemId}>
@@ -100,8 +116,17 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
         </IonHeader>
 
         <IonContent>
-          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.props.checklist.stoneLocations} toggleStoneFoundStatus={this.props.toggleStoneFoundStatus} />
+          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.getVisibleStoneLocations()} toggleStoneFoundStatus={this.props.toggleStoneFoundStatus} />
         </IonContent>
+        <IonFooter>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton color="primary" fill={this.state.hideCompletedStones ? 'solid' : 'clear'} onClick={this.toggleHideCompletedStones}>
+                {this.state.hideCompletedStones ? 'Show' : 'Hide'} Completed
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonFooter>
       </IonPage>
     );
   }

@@ -25,4 +25,5 @@ export interface StoneChecklist {
   checklistId: string;
   checklistName: string;
   stoneLocations: StoneLocation[];
+  hideCompletedStones: boolean;
 }

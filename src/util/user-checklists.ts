@@ -11,6 +11,7 @@ export const userChecklists: StoneChecklist[] = [
             const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId % 3 === 0) };
             return stonLoc;
         }),
+        hideCompletedStones: false,
     },
     {
         checklistId: '' + (new Date().getTime() - 500),
@@ -19,6 +20,7 @@ export const userChecklists: StoneChecklist[] = [
             const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId % 5 === 0) };
             return stonLoc;
         }),
+        hideCompletedStones: true,
     },
     {
         checklistId: '' + (new Date().getTime()),
@@ -27,6 +29,7 @@ export const userChecklists: StoneChecklist[] = [
             const stonLoc: StoneLocation = { ...stone, isFound: (stone.stoneId === 7 || stone.stoneId === 21) };
             return stonLoc;
         }),
+        hideCompletedStones: false,
     },
 ];
 
@@ -49,7 +52,8 @@ export function createNewStoneChecklist(newChecklistName: string): StoneChecklis
         stoneLocations: stoneLocations.map(stone => {
             const stonLoc: StoneLocation = {...stone, isFound: false};
             return stonLoc;
-        })
+        }),
+        hideCompletedStones: false,
     }
 
     return newChecklist;

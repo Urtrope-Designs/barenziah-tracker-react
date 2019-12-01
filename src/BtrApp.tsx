@@ -37,54 +37,79 @@ class BtrApp extends React.Component<any, BtrAppState> {
         this.state = {userChecklists: userChecklists, activeChecklistId: userChecklists[0].checklistId};
     }
 
+    private updateStoneListData = (allChecklists: StoneChecklist[], checklistToUpdateId: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
+        const listToUpdateIndex = allChecklists.findIndex(checklist => checklist.checklistId === checklistToUpdateId);
+        if (listToUpdateIndex === -1) {
+            return null;
+        }
+        const curList = allChecklists[listToUpdateIndex];
+
+        const newList: StoneChecklist = updateFunc(curList);
+
+        const newChecklists = [...allChecklists];
+        newChecklists[listToUpdateIndex] = newList;
+
+        return newChecklists;
+    }
+
     toggleStoneFoundStatus = (checklistId: string, stoneId: number) => {
         this.setState(({userChecklists}) => {
-            const curListIndex = userChecklists.findIndex(checklist => checklist.checklistId === checklistId);
-            if (curListIndex === -1) {
-                console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
+            const updatedChecklists = this.updateStoneListData(userChecklists, checklistId, (curList: StoneChecklist) => {
+                return {
+                    ...curList, 
+                    stoneLocations: curList.stoneLocations.map(stonLoc => {
+                        if (stonLoc.stoneId === stoneId) {
+                            return {...stonLoc, isFound: !stonLoc.isFound};
+                        } else {
+                            return {...stonLoc}
+                        }
+                    })
+                }
+            });
+
+            if (updatedChecklists === null) {
+                console.error(`updateStoneListData() invalid checklistId: ${checklistId}`);
                 return {userChecklists: userChecklists};
             }
-            const curList = userChecklists[curListIndex];
 
-            const newList: StoneChecklist = {
-                checklistId: checklistId,
-                checklistName: curList.checklistName,
-                stoneLocations: curList.stoneLocations.map(stonLoc => {
-                    if (stonLoc.stoneId === stoneId) {
-                        return {...stonLoc, isFound: !stonLoc.isFound};
-                    } else {
-                        return {...stonLoc}
-                    }
-                })
-            }
-
-            const newChecklists = [...userChecklists];
-            newChecklists[curListIndex] = newList;
-            
-            return {userChecklists: newChecklists};
+            return {userChecklists: updatedChecklists};
         });
     }
 
     updateChecklistName = (checklistId: string, newChecklistname: string) => {
         this.setState(({userChecklists}) => {
-            const curListIndex = userChecklists.findIndex(checklist => checklist.checklistId === checklistId);
-            if (curListIndex === -1) {
+            const updatedChecklists = this.updateStoneListData(userChecklists, checklistId, (curList: StoneChecklist) => {
+                return {
+                    ...curList,
+                    checklistName: newChecklistname,
+                }
+            })
+            
+            if (updatedChecklists === null) {
                 console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
                 return {userChecklists: userChecklists};
             }
-            const curList = userChecklists[curListIndex];
 
-            const newList: StoneChecklist = {
-                checklistId: checklistId,
-                checklistName: newChecklistname,
-                stoneLocations: curList.stoneLocations,
+            return {userChecklists: updatedChecklists};
+        });
+    }
+
+    toggleHideCompletedStones = (checklistId: string) => {
+        this.setState(({userChecklists}) => {
+            const updatedChecklists = this.updateStoneListData(userChecklists, checklistId, (curList: StoneChecklist) => {
+                return {
+                    ...curList,
+                    hideCompletedStones: !curList.hideCompletedStones,
+                }
+            })
+
+            if (updatedChecklists === null) {
+                console.error(`toggleHideCompletedStones() invalid checklistId: ${checklistId}`);
+                return {userChecklists: userChecklists};
             }
 
-            const newChecklists = [...userChecklists];
-            newChecklists[curListIndex] = newList;
-            
-            return {userChecklists: newChecklists};
-        });
+            return {userChecklists: updatedChecklists};
+        })
     }
 
     addNewChecklist = (newChecklistName: string) => {
@@ -137,6 +162,7 @@ class BtrApp extends React.Component<any, BtrAppState> {
                             checklist={this.state.userChecklists.find(c => c.checklistId === this.state.activeChecklistId) || this.state.userChecklists[0]}
                             toggleStoneFoundStatus={(stoneId: number) => {this.toggleStoneFoundStatus(this.state.activeChecklistId, stoneId)}}
                             updateChecklistName={(newChecklistName: string) => {this.updateChecklistName(this.state.activeChecklistId, newChecklistName)}}
+                            toggleHideCompletedStones={() => {this.toggleHideCompletedStones(this.state.activeChecklistId)}}
                         />
                     </IonSplitPane>
                 </IonReactRouter>

@@ -10,11 +10,11 @@ interface ChecklistPageProps {
   checklist: StoneChecklist;
   toggleStoneFoundStatus(stoneId: number): any;
   updateChecklistName(newChecklistName: string): any;
+  toggleHideCompletedStones(): any;
 }
 
 interface ChecklistPageState {
   checklistNameEdit: string;
-  hideCompletedStones: boolean;
 }
 
 class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageState> {
@@ -24,7 +24,6 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     super(props);
     this.state = {
       checklistNameEdit: props.checklist.checklistName,
-      hideCompletedStones: false,
     }
 
     this.checklistNameEditSaveButton = React.createRef();
@@ -32,7 +31,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
 
   componentDidUpdate(prevProps: ChecklistPageProps) {
     if (this.props.checklist.checklistId !== prevProps.checklist.checklistId) {
-      this.setState({checklistNameEdit: this.props.checklist.checklistName, hideCompletedStones: false});
+      this.setState({checklistNameEdit: this.props.checklist.checklistName});
     }
   }
 
@@ -71,14 +70,8 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     this.props.updateChecklistName(this.state.checklistNameEdit);
   }
 
-  toggleHideCompletedStones = () => {
-    this.setState(({hideCompletedStones}) => {
-      return {hideCompletedStones: !hideCompletedStones};
-    })
-  }
-
   getVisibleStoneLocations = () => {
-    if (this.state.hideCompletedStones) {
+    if (this.props.checklist.hideCompletedStones) {
       return this.props.checklist.stoneLocations.filter(stonLoc => !stonLoc.isFound);
     } else {
       return this.props.checklist.stoneLocations;
@@ -121,8 +114,8 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
         <IonFooter>
           <IonToolbar>
             <IonButtons slot="start">
-              <IonButton color="primary" fill={this.state.hideCompletedStones ? 'solid' : 'clear'} onClick={this.toggleHideCompletedStones}>
-                {this.state.hideCompletedStones ? 'Show' : 'Hide'} Completed
+              <IonButton color="primary" fill={this.props.checklist.hideCompletedStones ? 'solid' : 'clear'} onClick={this.props.toggleHideCompletedStones}>
+                {this.props.checklist.hideCompletedStones ? 'Show' : 'Hide'} Completed
               </IonButton>
             </IonButtons>
           </IonToolbar>

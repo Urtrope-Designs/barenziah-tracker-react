@@ -130,6 +130,7 @@ class BtrApp extends React.Component<any, BtrAppState> {
                     <IonSplitPane contentId="main">
                         <ChecklistSummaryList
                             checklistSummaries={getChecklistSummaries(this.state.userChecklists)}
+                            activeChecklistId={this.state.activeChecklistId}
                             addNewChecklist={this.addNewChecklist}
                             activateChecklist={this.activateChecklist}
                             deleteChecklist={this.deleteChecklist}

@@ -24,6 +24,7 @@ import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
+  activeChecklistId: string;
   addNewChecklist(checklistName: string): any;
   activateChecklist(checklistId: string): any;
   deleteChecklist(checklistId: string): any;
@@ -88,7 +89,11 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
               return (
                 <IonItemSliding key={checklistSummaryEntry.checklistId}>
                   <IonMenuToggle autoHide={false}>
-                    <ChecklistSummaryEntry checklistSummary={checklistSummaryEntry} entryClicked={this.props.activateChecklist} />
+                    <ChecklistSummaryEntry
+                      checklistSummary={checklistSummaryEntry}
+                      isHighlighted={this.props.activeChecklistId === checklistSummaryEntry.checklistId}
+                      entryClicked={this.props.activateChecklist}
+                    />
                   </IonMenuToggle>
                   <IonItemOptions>
                     <IonItemOption color="danger" onClick={() => this.confirmDeleteChecklistSummary(checklistSummaryEntry.checklistId)}>

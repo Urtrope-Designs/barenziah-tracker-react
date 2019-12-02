@@ -37,24 +37,27 @@ class BtrApp extends React.Component<any, BtrAppState> {
         this.state = {userChecklists: userChecklists, activeChecklistId: userChecklists[0].checklistId};
     }
 
-    private updateStoneListData = (allChecklists: StoneChecklist[], checklistToUpdateId: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
-        const listToUpdateIndex = allChecklists.findIndex(checklist => checklist.checklistId === checklistToUpdateId);
-        if (listToUpdateIndex === -1) {
-            return null;
-        }
-        const curList = allChecklists[listToUpdateIndex];
+    private updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
+        this.setState(({userChecklists}) => {
 
-        const newList: StoneChecklist = updateFunc(curList);
-
-        const newChecklists = [...allChecklists];
-        newChecklists[listToUpdateIndex] = newList;
-
-        return newChecklists;
+            const listToUpdateIndex = userChecklists.findIndex(checklist => checklist.checklistId === checklistToUpdateId);
+            if (listToUpdateIndex === -1) {
+                console.error(`${callerName}() invalid checklistId: ${checklistToUpdateId}`);
+                return {userChecklists: userChecklists};
+            }
+            const curList = userChecklists[listToUpdateIndex];
+            
+            const newList: StoneChecklist = updateFunc(curList);
+            
+            const newChecklists = [...userChecklists];
+            newChecklists[listToUpdateIndex] = newList;
+            
+            return {userChecklists: newChecklists};
+        });
     }
 
     toggleStoneFoundStatus = (checklistId: string, stoneId: number) => {
-        this.setState(({userChecklists}) => {
-            const updatedChecklists = this.updateStoneListData(userChecklists, checklistId, (curList: StoneChecklist) => {
+        this.updateStoneListData(checklistId, 'toggleStoneFoundStatus', (curList: StoneChecklist) => {
                 return {
                     ...curList, 
                     stoneLocations: curList.stoneLocations.map(stonLoc => {
@@ -66,50 +69,24 @@ class BtrApp extends React.Component<any, BtrAppState> {
                     })
                 }
             });
-
-            if (updatedChecklists === null) {
-                console.error(`updateStoneListData() invalid checklistId: ${checklistId}`);
-                return {userChecklists: userChecklists};
-            }
-
-            return {userChecklists: updatedChecklists};
-        });
     }
 
     updateChecklistName = (checklistId: string, newChecklistname: string) => {
-        this.setState(({userChecklists}) => {
-            const updatedChecklists = this.updateStoneListData(userChecklists, checklistId, (curList: StoneChecklist) => {
+        this.updateStoneListData(checklistId, 'updateChecklistName', (curList: StoneChecklist) => {
                 return {
                     ...curList,
                     checklistName: newChecklistname,
                 }
-            })
-            
-            if (updatedChecklists === null) {
-                console.error(`toggleStoneFoundStatus() invalid checklistId: ${checklistId}`);
-                return {userChecklists: userChecklists};
-            }
-
-            return {userChecklists: updatedChecklists};
-        });
+            });
     }
 
     toggleHideCompletedStones = (checklistId: string) => {
-        this.setState(({userChecklists}) => {
-            const updatedChecklists = this.updateStoneListData(userChecklists, checklistId, (curList: StoneChecklist) => {
+        this.updateStoneListData(checklistId, 'toggleHideCompletedStones', (curList: StoneChecklist) => {
                 return {
                     ...curList,
                     hideCompletedStones: !curList.hideCompletedStones,
                 }
-            })
-
-            if (updatedChecklists === null) {
-                console.error(`toggleHideCompletedStones() invalid checklistId: ${checklistId}`);
-                return {userChecklists: userChecklists};
-            }
-
-            return {userChecklists: updatedChecklists};
-        })
+            });
     }
 
     addNewChecklist = (newChecklistName: string) => {

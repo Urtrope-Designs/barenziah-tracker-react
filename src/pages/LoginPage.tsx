@@ -1,6 +1,7 @@
 import React from 'react';
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonGrid, IonRow, IonCol } from '@ionic/react';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
@@ -27,10 +28,16 @@ const uiConfig: firebaseui.auth.Config = {
 
 const LoginPage: React.FC = () => {
     return (
-        <div>
-            <h1>Please Sign In:</h1>
-            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-        </div>
+        <IonPage>
+            <IonHeader>
+                <IonToolbar>
+                    <IonTitle class="ion-text-center">Barenziah Tracker</IonTitle>
+                </IonToolbar>
+            </IonHeader>
+            <IonContent class="ion-padding">
+                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+            </IonContent>
+        </IonPage>
     );
 };
 

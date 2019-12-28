@@ -1,19 +1,11 @@
 import React from 'react';
-import firebase from 'firebase';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import firebase from 'firebase/app';
+import FirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
-    authDomain: "barenziah-tracker.firebaseapp.com",
-    databaseURL: "https://barenziah-tracker.firebaseio.com",
-    projectId: "barenziah-tracker",
-    storageBucket: "barenziah-tracker.appspot.com",
-    messagingSenderId: "23343523090",
-    appId: "1:23343523090:web:5ec809772a7ed187dd3fcb",
-    measurementId: "G-2C0BE53KXX"
-};
-firebase.initializeApp(firebaseConfig);
+interface LoginPageProps {
+    firebaseApp: firebase.app.App;
+}
 
 const uiConfig: firebaseui.auth.Config = {
     signInFlow: 'popup',
@@ -21,12 +13,12 @@ const uiConfig: firebaseui.auth.Config = {
     signInOptions: [
         {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            signInMethod: firebase.auth.EmailAuthProvider.EMAIL_LINK_SIGN_IN_METHOD,
-        }
+            requireDisplayName: false,
+        },
     ]
 }
 
-const LoginPage: React.FC = () => {
+const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {
     return (
         <IonPage>
             <IonHeader>
@@ -35,7 +27,7 @@ const LoginPage: React.FC = () => {
                 </IonToolbar>
             </IonHeader>
             <IonContent class="ion-padding">
-                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+                <FirebaseAuth uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />
             </IonContent>
         </IonPage>
     );

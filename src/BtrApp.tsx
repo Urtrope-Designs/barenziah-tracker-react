@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router';
-import { IonApp, IonRouterOutlet } from '@ionic/react';
+import { IonApp, IonRouterOutlet, IonSpinner, IonGrid, IonRow, IonCol } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
+import firebase from 'firebase/app';
+import 'firebase/auth';
 
 import UserChecklistsManager from './components/UserChecklistsManager';
 import LoginPage from './pages/LoginPage';
@@ -25,14 +27,50 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 
-const BtrApp: React.FC = () => {
+const firebaseConfig = {
+    apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
+    authDomain: "barenziah-tracker.firebaseapp.com",
+    databaseURL: "https://barenziah-tracker.firebaseio.com",
+    projectId: "barenziah-tracker",
+    storageBucket: "barenziah-tracker.appspot.com",
+    messagingSenderId: "23343523090",
+    appId: "1:23343523090:web:5ec809772a7ed187dd3fcb",
+    measurementId: "G-2C0BE53KXX"
+};
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 
-    return (
+const BtrApp: React.FC = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>(undefined);
+    useEffect(() => {
+        const unregisterAuthObserver = firebaseApp.auth().onAuthStateChanged((user) => {
+            setIsLoggedIn(!!user);
+        })
+
+        return unregisterAuthObserver;
+    });
+
+    return isLoggedIn === undefined ? (
+            <IonApp>
+                <IonGrid>
+                    <IonRow class="ion-align-items-center ion-justify-content-center" style={{height: '100%'}}>
+                        <IonCol style={{textAlign: 'center'}}>
+                            Uno Momento
+                            <br />
+                            <IonSpinner name="dots"/>
+                        </IonCol>
+                    </IonRow>
+                </IonGrid>
+            </IonApp>
+    )
+        : !isLoggedIn ? (
+            <LoginPage firebaseApp={firebaseApp} />
+        )
+        : (
         <IonApp>
             <IonReactRouter>
                 <IonRouterOutlet>
                     <Redirect exact from="/" to="/userchecklists" />
-                    <Route path="/login" component={LoginPage} />
+                    {/* <Route path="/login" component={LoginPage} /> */}
                     <Route path="/userchecklists" component={UserChecklistsManager} />
                 </IonRouterOutlet>
             </IonReactRouter>

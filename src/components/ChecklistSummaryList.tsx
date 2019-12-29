@@ -15,6 +15,7 @@ import {
   IonItemOptions,
   IonItemOption,
   IonAlert,
+  IonFooter,
 } from '@ionic/react';
 import { trash, close } from 'ionicons/icons';
 import React from 'react';
@@ -28,6 +29,7 @@ interface ChecklistSummaryListProps extends RouteComponentProps {
   addNewChecklist(checklistName: string): any;
   activateChecklist(checklistId: string): any;
   deleteChecklist(checklistId: string): any;
+  logOutClicked(): any;
 }
 
 interface ChecklistSummaryListState {
@@ -140,6 +142,15 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
             ]}
           />
         </IonContent>
+        <IonFooter>
+          <IonToolbar>
+            <IonButtons slot="start">
+              <IonButton color="primary" fill='clear' onClick={this.props.logOutClicked}>
+                Log Out
+              </IonButton>
+            </IonButtons>
+          </IonToolbar>
+        </IonFooter>
       </IonMenu>
     )
   }

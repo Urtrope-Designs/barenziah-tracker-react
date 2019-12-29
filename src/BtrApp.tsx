@@ -39,6 +39,10 @@ const firebaseConfig = {
 };
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
+const logOut = () => {
+    firebaseApp.auth().signOut()
+}
+
 const BtrApp: React.FC = () => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>(undefined);
     useEffect(() => {
@@ -70,8 +74,7 @@ const BtrApp: React.FC = () => {
             <IonReactRouter>
                 <IonRouterOutlet>
                     <Redirect exact from="/" to="/userchecklists" />
-                    {/* <Route path="/login" component={LoginPage} /> */}
-                    <Route path="/userchecklists" component={UserChecklistsManager} />
+                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} />} />
                 </IonRouterOutlet>
             </IonReactRouter>
         </IonApp>

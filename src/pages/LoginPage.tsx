@@ -15,7 +15,8 @@ const uiConfig: firebaseui.auth.Config = {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
             requireDisplayName: false,
         },
-    ]
+    ],
+    credentialHelper: 'none',
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {

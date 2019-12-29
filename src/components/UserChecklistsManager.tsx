@@ -5,12 +5,16 @@ import { getChecklistSummaries, userChecklists, createNewStoneChecklist } from '
 import ChecklistPage from '../pages/ChecklistPage';
 import { StoneChecklist } from '../declarations';
 
+interface UserChecklistManagerProps {
+    logOutClicked(): any;
+}
+
 interface UserChecklistManagerState {
     userChecklists: StoneChecklist[];
     activeChecklistId: string;
 }
 
-class UserChecklistsManager extends React.Component<any, UserChecklistManagerState> {
+class UserChecklistsManager extends React.Component<UserChecklistManagerProps, UserChecklistManagerState> {
     constructor(props: any) {
         super(props);
         this.state = {userChecklists: userChecklists, activeChecklistId: userChecklists[0].checklistId};
@@ -111,6 +115,7 @@ class UserChecklistsManager extends React.Component<any, UserChecklistManagerSta
                     addNewChecklist={this.addNewChecklist}
                     activateChecklist={this.activateChecklist}
                     deleteChecklist={this.deleteChecklist}
+                    logOutClicked={this.props.logOutClicked}
                     />
                 <ChecklistPage
                     pageElemId="main"

@@ -40,20 +40,20 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const logOut = () => {
-    firebaseApp.auth().signOut()
+    firebaseApp.auth().signOut();
 }
 
 const BtrApp: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>(undefined);
+    const [currentUser, setCurrentUser] = useState<firebase.User | null | undefined>(undefined);
     useEffect(() => {
         const unregisterAuthObserver = firebaseApp.auth().onAuthStateChanged((user) => {
-            setIsLoggedIn(!!user);
+            setCurrentUser(user);
         })
 
         return unregisterAuthObserver;
     });
 
-    return isLoggedIn === undefined ? (
+    return currentUser === undefined ? (
             <IonApp>
                 <IonGrid>
                     <IonRow class="ion-align-items-center ion-justify-content-center" style={{height: '100%'}}>
@@ -66,7 +66,7 @@ const BtrApp: React.FC = () => {
                 </IonGrid>
             </IonApp>
     )
-        : !isLoggedIn ? (
+        : currentUser === null ? (
             <LoginPage firebaseApp={firebaseApp} />
         )
         : (
@@ -74,7 +74,7 @@ const BtrApp: React.FC = () => {
             <IonReactRouter>
                 <IonRouterOutlet>
                     <Redirect exact from="/" to="/userchecklists" />
-                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} />} />
+                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} firebaseApp={firebaseApp} userId={currentUser.uid} />} />
                 </IonRouterOutlet>
             </IonReactRouter>
         </IonApp>

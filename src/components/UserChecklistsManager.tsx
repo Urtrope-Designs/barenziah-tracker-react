@@ -4,9 +4,15 @@ import ChecklistSummaryList from './ChecklistSummaryList';
 import { getChecklistSummaries, userChecklists, createNewStoneChecklist } from '../util/user-checklists';
 import ChecklistPage from '../pages/ChecklistPage';
 import { StoneChecklist } from '../declarations';
+import firebase from 'firebase/app';
+import 'firebase/firestore';
+
+let db: firebase.firestore.Firestore;
 
 interface UserChecklistManagerProps {
     logOutClicked(): any;
+    firebaseApp: firebase.app.App;
+    userId: string;
 }
 
 interface UserChecklistManagerState {
@@ -18,6 +24,7 @@ class UserChecklistsManager extends React.Component<UserChecklistManagerProps, U
     constructor(props: any) {
         super(props);
         this.state = {userChecklists: userChecklists, activeChecklistId: userChecklists[0].checklistId};
+        db = props.firebaseApp.firestore();
     }
 
     private updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
@@ -35,6 +42,11 @@ class UserChecklistsManager extends React.Component<UserChecklistManagerProps, U
             const newChecklists = [...userChecklists];
             newChecklists[listToUpdateIndex] = newList;
             
+            if (this.props.firebaseApp.auth().currentUser != null){
+                newChecklists.forEach(list => {
+                    db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).collection('checklists').add(list);
+                });
+            }
             return {userChecklists: newChecklists};
         });
     }

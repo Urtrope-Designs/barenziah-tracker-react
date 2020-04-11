@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router';
-import { IonApp, IonRouterOutlet, IonSpinner, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -26,6 +26,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import FullPageLoader from './components/FullPageLoader';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
@@ -40,33 +41,23 @@ const firebaseConfig = {
 const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 const logOut = () => {
-    firebaseApp.auth().signOut()
+    firebaseApp.auth().signOut();
 }
 
 const BtrApp: React.FC = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>(undefined);
+    const [currentUser, setCurrentUser] = useState<firebase.User | null | undefined>(undefined);
     useEffect(() => {
         const unregisterAuthObserver = firebaseApp.auth().onAuthStateChanged((user) => {
-            setIsLoggedIn(!!user);
+            setCurrentUser(user);
         })
 
         return unregisterAuthObserver;
     });
 
-    return isLoggedIn === undefined ? (
-            <IonApp>
-                <IonGrid>
-                    <IonRow class="ion-align-items-center ion-justify-content-center" style={{height: '100%'}}>
-                        <IonCol style={{textAlign: 'center'}}>
-                            Uno Momento
-                            <br />
-                            <IonSpinner name="dots"/>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
-            </IonApp>
+    return currentUser === undefined ? (
+            <FullPageLoader message={'Uno Momento'}></FullPageLoader>
     )
-        : !isLoggedIn ? (
+        : currentUser === null ? (
             <LoginPage firebaseApp={firebaseApp} />
         )
         : (
@@ -74,7 +65,7 @@ const BtrApp: React.FC = () => {
             <IonReactRouter>
                 <IonRouterOutlet>
                     <Redirect exact from="/" to="/userchecklists" />
-                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} />} />
+                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} firebaseApp={firebaseApp} userId={currentUser.uid} />} />
                 </IonRouterOutlet>
             </IonReactRouter>
         </IonApp>

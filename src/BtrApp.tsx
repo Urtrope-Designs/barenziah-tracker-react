@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Route, Redirect } from 'react-router';
-import { IonApp, IonRouterOutlet, IonSpinner, IonGrid, IonRow, IonCol } from '@ionic/react';
+import { IonApp, IonRouterOutlet } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import firebase from 'firebase/app';
 import 'firebase/auth';
@@ -26,6 +26,7 @@ import '@ionic/react/css/display.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import FullPageLoader from './components/FullPageLoader';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
@@ -54,17 +55,7 @@ const BtrApp: React.FC = () => {
     });
 
     return currentUser === undefined ? (
-            <IonApp>
-                <IonGrid>
-                    <IonRow class="ion-align-items-center ion-justify-content-center" style={{height: '100%'}}>
-                        <IonCol style={{textAlign: 'center'}}>
-                            Uno Momento
-                            <br />
-                            <IonSpinner name="dots"/>
-                        </IonCol>
-                    </IonRow>
-                </IonGrid>
-            </IonApp>
+            <FullPageLoader message={'Uno Momento'}></FullPageLoader>
     )
         : currentUser === null ? (
             <LoginPage firebaseApp={firebaseApp} />

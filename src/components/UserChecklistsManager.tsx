@@ -1,11 +1,12 @@
 import React from 'react';
 import { IonSplitPane } from '@ionic/react';
 import ChecklistSummaryList from './ChecklistSummaryList';
-import { getChecklistSummaries, userChecklists, createNewStoneChecklist } from '../util/user-checklists';
+import { getChecklistSummaries, createNewStoneChecklist } from '../util/user-checklists';
 import ChecklistPage from '../pages/ChecklistPage';
 import { StoneChecklist } from '../declarations';
 import firebase from 'firebase/app';
 import 'firebase/firestore';
+import FullPageLoader from './FullPageLoader';
 
 let db: firebase.firestore.Firestore;
 
@@ -23,31 +24,36 @@ interface UserChecklistManagerState {
 class UserChecklistsManager extends React.Component<UserChecklistManagerProps, UserChecklistManagerState> {
     constructor(props: any) {
         super(props);
-        this.state = {userChecklists: userChecklists, activeChecklistId: userChecklists[0].checklistId};
         db = props.firebaseApp.firestore();
+        db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).collection('checklists').onSnapshot(querySnapshot => {
+            if (querySnapshot.size < 1) {
+                this.addNewChecklist('Untitled');
+            } else {
+                this.setState({userChecklists: querySnapshot.docs.map(this.hydrateChecklistFromFB)});
+            }
+        });
+        db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).onSnapshot(querySnapshot => {
+            const queryData = querySnapshot.data();
+            if (queryData !== undefined) {
+                this.setState({activeChecklistId: queryData.activeChecklistId});
+            }
+        });
     }
 
     private updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
         this.setState(({userChecklists}) => {
-
-            const listToUpdateIndex = userChecklists.findIndex(checklist => checklist.checklistId === checklistToUpdateId);
-            if (listToUpdateIndex === -1) {
+            const listToUpdate = userChecklists.find(checklist => checklist.checklistId === checklistToUpdateId);
+            if (listToUpdate == null) {
                 console.error(`${callerName}() invalid checklistId: ${checklistToUpdateId}`);
                 return {userChecklists: userChecklists};
             }
-            const curList = userChecklists[listToUpdateIndex];
-            
-            const newList: StoneChecklist = updateFunc(curList);
-            
-            const newChecklists = [...userChecklists];
-            newChecklists[listToUpdateIndex] = newList;
-            
-            if (this.props.firebaseApp.auth().currentUser != null){
-                newChecklists.forEach(list => {
-                    db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).collection('checklists').add(list);
-                });
-            }
-            return {userChecklists: newChecklists};
+
+            const newList: StoneChecklist = updateFunc(listToUpdate);
+
+            const userDoc = db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid);
+            userDoc.collection('checklists').doc(checklistToUpdateId).set(newList);
+
+            return null;
         });
     }
 
@@ -86,40 +92,50 @@ class UserChecklistsManager extends React.Component<UserChecklistManagerProps, U
 
     addNewChecklist = (newChecklistName: string) => {
         const newChecklist: StoneChecklist = createNewStoneChecklist(newChecklistName);
-        this.setState((state: UserChecklistManagerState) => {
-            const newChecklists = [...state.userChecklists, newChecklist];
-            return {userChecklists: newChecklists, activeChecklistId: newChecklist.checklistId};
+        db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).collection('checklists').add(newChecklist).then((docRef) => {
+            db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).set({
+                activeChecklistId: docRef.id
+            });
         });
     }
 
     activateChecklist = (checklistId: string) => {
         this.setState((state) => {
             if (checklistId != null && state.userChecklists.some(c => c.checklistId === checklistId)) {
-                return {activeChecklistId: checklistId};
-            } else {
-                return {activeChecklistId: state.activeChecklistId};
-            }
+                db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).set({
+                    activeChecklistId: checklistId
+                });
+            } 
+            return null;
         })
     }
 
     deleteChecklist = (checklistId: string) => {
         this.setState((state) => {
-            const deletedChecklistIndex = state.userChecklists.findIndex(c => c.checklistId === checklistId);
-            const updatedChecklistsList = state.userChecklists;
-            if (deletedChecklistIndex !== -1) {
-                updatedChecklistsList.splice(deletedChecklistIndex, 1);
-            }
+            const userDoc = db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid);
+            userDoc.collection('checklists').doc(checklistId).delete().then(() => {
+                if (state.activeChecklistId === checklistId && state.userChecklists.length > 1) {
+                    const firstChecklistId = state.userChecklists[0].checklistId;
+                    this.activateChecklist(firstChecklistId === checklistId ? state.userChecklists[1].checklistId : firstChecklistId);
+                } 
+            });
 
-            let updatedState: any = {userChecklists: updatedChecklistsList};
-            if (state.activeChecklistId === checklistId) {
-                updatedState.activeChecklistId = updatedChecklistsList[0].checklistId;
-            } 
-            return updatedState;
+            return null;
         })
     }
 
+    hydrateChecklistFromFB(fbChecklistDoc: firebase.firestore.QueryDocumentSnapshot): StoneChecklist {
+        const extractedChecklist: StoneChecklist = {...(fbChecklistDoc.data() as StoneChecklist)};
+        extractedChecklist.checklistId = fbChecklistDoc.id;
+        return extractedChecklist;
+    }
+
     render() {
-        return (
+        console.log(this.state);
+        return this.state == null ? (
+            <FullPageLoader message={'Uno Momento'}></FullPageLoader>
+        )
+        : (
             <IonSplitPane contentId="main">
                 <ChecklistSummaryList
                     checklistSummaries={getChecklistSummaries(this.state.userChecklists)}

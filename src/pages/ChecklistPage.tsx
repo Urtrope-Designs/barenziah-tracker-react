@@ -8,7 +8,7 @@ import './ChecklistPage.css';
 interface ChecklistPageProps {
   pageElemId?: string;
   checklist: StoneChecklist;
-  toggleStoneFoundStatus(stoneId: number): any;
+  setStoneFoundStatus(stoneId: number, value: boolean): any;
   updateChecklistName(newChecklistName: string): any;
   toggleHideCompletedStones(): any;
 }
@@ -109,7 +109,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
         </IonHeader>
 
         <IonContent>
-          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.getVisibleStoneLocations()} toggleStoneFoundStatus={this.props.toggleStoneFoundStatus} />
+          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.getVisibleStoneLocations()} setStoneFoundStatus={this.props.setStoneFoundStatus} />
         </IonContent>
         <IonFooter>
           <IonToolbar>

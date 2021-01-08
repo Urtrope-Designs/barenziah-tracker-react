@@ -5,12 +5,12 @@ import { IonList } from '@ionic/react';
 
 interface StoneSummaryListProps {
     stoneLocations: StoneLocation[];
-    toggleStoneFoundStatus(stoneId: number): any;
+    setStoneFoundStatus(stoneId: number, value: boolean): any;
 }
 
-const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, toggleStoneFoundStatus}) => {
+const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, setStoneFoundStatus}) => {
     const stones = stoneLocations.map(stonLoc => {
-        return <StoneSummaryEntry key={stonLoc.stoneId} stone={stonLoc} toggleStoneFoundStatus={toggleStoneFoundStatus}/>;
+        return <StoneSummaryEntry key={stonLoc.stoneId} stone={stonLoc} setStoneFoundStatus={setStoneFoundStatus}/>;
     })
 
     return <IonList>{stones}</IonList>;

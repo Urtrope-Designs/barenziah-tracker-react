@@ -4,16 +4,16 @@ import React from "react";
 
 interface StoneSummaryEntryProps {
     stone: StoneLocation;
-    toggleStoneFoundStatus(stoneId: number): any;
+    setStoneFoundStatus(stoneId: number, value: boolean): any;
 }
 
-const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, toggleStoneFoundStatus }) => {
+const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, setStoneFoundStatus }) => {
     return (
         <IonItem>
             <IonCheckbox
                 slot="start"
                 checked={stone.isFound}
-                onIonChange={() => toggleStoneFoundStatus(stone.stoneId)}
+                onIonChange={(e) => setStoneFoundStatus(stone.stoneId, e.detail.checked)}
             />
             <IonLabel>
                 <h2>{stone.locationName}</h2>

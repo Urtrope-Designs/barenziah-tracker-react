@@ -57,13 +57,13 @@ class UserChecklistsManager extends React.Component<UserChecklistManagerProps, U
         });
     }
 
-    toggleStoneFoundStatus = (checklistId: string, stoneId: number) => {
-        this.updateStoneListData(checklistId, 'toggleStoneFoundStatus', (curList: StoneChecklist) => {
+    setStoneFoundStatus = (checklistId: string, stoneId: number, value: boolean) => {
+        this.updateStoneListData(checklistId, 'setStoneFoundStatus', (curList: StoneChecklist) => {
                 return {
                     ...curList, 
                     stoneLocations: curList.stoneLocations.map(stonLoc => {
                         if (stonLoc.stoneId === stoneId) {
-                            return {...stonLoc, isFound: !stonLoc.isFound};
+                            return {...stonLoc, isFound: value};
                         } else {
                             return {...stonLoc}
                         }
@@ -148,7 +148,7 @@ class UserChecklistsManager extends React.Component<UserChecklistManagerProps, U
                 <ChecklistPage
                     pageElemId="main"
                     checklist={this.state.userChecklists.find(c => c.checklistId === this.state.activeChecklistId) || this.state.userChecklists[0]}
-                    toggleStoneFoundStatus={(stoneId: number) => {this.toggleStoneFoundStatus(this.state.activeChecklistId, stoneId)}}
+                    setStoneFoundStatus={(stoneId: number, value: boolean) => {this.setStoneFoundStatus(this.state.activeChecklistId, stoneId, value)}}
                     updateChecklistName={(newChecklistName: string) => {this.updateChecklistName(this.state.activeChecklistId, newChecklistName)}}
                     toggleHideCompletedStones={() => {this.toggleHideCompletedStones(this.state.activeChecklistId)}}
                     />

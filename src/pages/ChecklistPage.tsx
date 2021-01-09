@@ -2,6 +2,7 @@ import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, Io
 import React from 'react';
 import { StoneChecklist } from '../declarations';
 import StoneSummaryList from '../components/StoneSummaryList';
+import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
 
 import './ChecklistPage.css';
 
@@ -90,6 +91,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
               <IonInput
                 spellCheck={false}
                 autoCorrect="off"
+                maxlength={MAX_CHARACTER_NAME_LENGTH}
                 key={this.props.checklist.checklistId}
                 value={this.state.checklistNameEdit}
                 onIonChange={this.handleChecklistNameInputChange}

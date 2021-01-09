@@ -22,6 +22,7 @@ import React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ChecklistSummary } from '../declarations';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
+import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
 
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
@@ -108,6 +109,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
             <IonItem>
               <IonInput
                 placeholder="New Character"
+                maxlength={MAX_CHARACTER_NAME_LENGTH}
                 value={this.state.newChecklistName}
                 onIonChange={this.handleNewChecklistNameChange}
                 onKeyPress={this.handleNewChecklistInputKeypress}

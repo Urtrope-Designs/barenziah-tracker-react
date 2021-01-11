@@ -131,7 +131,6 @@ class UserChecklistsManager extends React.Component<UserChecklistManagerProps, U
     }
 
     render() {
-        console.log(this.state);
         return this.state == null ? (
             <FullPageLoader message={'Uno Momento'}></FullPageLoader>
         )

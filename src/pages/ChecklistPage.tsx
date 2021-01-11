@@ -50,7 +50,9 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
   }
   handleChecklistNameInputClickaway = (event: MouseEvent) => {
     if (event.target !== this.checklistNameEditSaveButton.current) {
-      this.setState({checklistNameEdit: this.props.checklist.checklistName});
+      setTimeout(() => {
+        this.setState({checklistNameEdit: this.props.checklist.checklistName});
+      }, 20);
       document.removeEventListener('focusin', this.handleChecklistNameInputFocusSteal);
     }
   }

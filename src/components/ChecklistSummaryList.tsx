@@ -16,6 +16,8 @@ import {
   IonItemOption,
   IonAlert,
   IonFooter,
+  IonModal,
+  IonPage,
 } from '@ionic/react';
 import { trash, close } from 'ionicons/icons';
 import React from 'react';
@@ -23,6 +25,8 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ChecklistSummary } from '../declarations';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
+
+import './ChecklistSummaryList.css';
 
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
@@ -36,6 +40,7 @@ interface ChecklistSummaryListProps extends RouteComponentProps {
 interface ChecklistSummaryListState {
   newChecklistName: string;
   requestedDeleteChecklistId: string | null;
+  showAboutModal: boolean;
 }
 
 class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, ChecklistSummaryListState> {
@@ -46,6 +51,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
     this.state = {
       newChecklistName: '',
       requestedDeleteChecklistId: null,
+      showAboutModal: false,
     };
   }
 
@@ -71,6 +77,10 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
 
   confirmDeleteChecklistSummary = (checklistId: string) => {
     this.setState({requestedDeleteChecklistId: checklistId});
+  }
+
+  aboutClicked = () => {
+    this.setState({showAboutModal: true});
   }
 
   render() {
@@ -143,12 +153,27 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
               }
             ]}
           />
+          <IonModal isOpen={this.state.showAboutModal} cssClass="aboutModal">
+            <IonPage>
+              <div>
+                <h1>All about it</h1>
+                <p>This app was lovingly crafted by <a href="https://urtropedesigns.com/" target="_blank" rel="noreferrer noopener">Urtrope Designs</a></p>
+                <p>Most of the content in this app was pulled from the "Stones of Barenziah" article on the <a href="https://elderscrolls.fandom.com/wiki/Stones_of_Barenziah" target="_blank" rel="noreferrer noopener">Elder Scrolls Fandom Wiki</a></p>
+              </div>
+              <IonButton expand="full" onClick={() => this.setState({showAboutModal: false})}>Cool story bro</IonButton>
+            </IonPage>
+          </IonModal>
         </IonContent>
         <IonFooter>
           <IonToolbar>
             <IonButtons slot="start">
               <IonButton color="primary" fill='clear' onClick={this.props.logOutClicked}>
                 Log Out
+              </IonButton>
+            </IonButtons>
+            <IonButtons slot="end">
+              <IonButton color="primary" fill="clear" onClick={this.aboutClicked}>
+                About
               </IonButton>
             </IonButtons>
           </IonToolbar>

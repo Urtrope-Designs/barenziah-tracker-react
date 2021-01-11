@@ -1,6 +1,7 @@
 import { StoneLocation } from "../declarations";
 import { IonItem, IonCheckbox, IonLabel } from "@ionic/react";
 import React from "react";
+import { STONE_LIST } from "../util/stone-list";
 
 interface StoneSummaryEntryProps {
     stone: StoneLocation;
@@ -8,7 +9,8 @@ interface StoneSummaryEntryProps {
 }
 
 const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, setStoneFoundStatus }) => {
-    return (
+    const stoneData = STONE_LIST.find(s => s.stoneId === stone.stoneId);
+    return !!stoneData ? (
         <IonItem>
             <IonCheckbox
                 slot="start"
@@ -16,13 +18,13 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, setStoneFo
                 onIonChange={(e) => setStoneFoundStatus(stone.stoneId, e.detail.checked)}
             />
             <IonLabel>
-                <h2>{stone.locationName}{!!stone.sublocationName ? ' - ' + stone.sublocationName : ''}</h2>
+                <h2>{stoneData.locationName}{!!stoneData.sublocationName ? ' - ' + stoneData.sublocationName : ''}</h2>
                 <p className="item-note">
                     Hold: {stone.holdName}
                 </p>
             </IonLabel>
         </IonItem>
-    );
+    ) : null;
 }
 
 export default StoneSummaryEntry;

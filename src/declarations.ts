@@ -14,6 +14,7 @@ export type FoundStoneIds = number[];
 export interface StoneLocationData {
   stoneId: number;
   locationName: string;
+  sublocationName?: string;
   holdName: 'Eastmarch'|'Falkreath'|'Haafingar'|'Hjaalmarch'|'The Reach'|'The Rift'|'Whiterun'|'Winterhold';
 }
 

@@ -3,7 +3,8 @@ import { StoneLocationData } from "../declarations";
 export const STONE_LIST: StoneLocationData[] = [
     {
         stoneId: 0,
-        locationName: 'Ansilvund – Ansilvund Burial Chambers',
+        locationName: 'Ansilvund',
+        sublocationName: 'Ansilvund Burial Chambers',
         holdName: 'Eastmarch',
     },
     {
@@ -13,12 +14,14 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 2,
-        locationName: 'Windhelm – House of Clan Shatter-Shield',
+        locationName: 'Windhelm',
+        sublocationName: 'House of Clan Shatter-Shield',
         holdName: 'Eastmarch',
     },
     {
         stoneId: 3,
-        locationName: 'Windhelm – Palace of the Kings',
+        locationName: 'Windhelm',
+        sublocationName: 'Palace of the Kings',
         holdName: 'Eastmarch',
     },
     {
@@ -28,7 +31,8 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 5,
-        locationName: 'Pinewatch – Bandit\'s Sanctuary',
+        locationName: 'Pinewatch',
+        sublocationName: 'Bandit\'s Sanctuary',
         holdName: 'Falkreath',
     },
     {
@@ -48,12 +52,14 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 9,
-        locationName: 'Solitude – Blue Palace',
+        locationName: 'Solitude',
+        sublocationName: 'Blue Palace',
         holdName: 'Haafingar',
     },
     {
         stoneId: 10,
-        locationName: 'Solitude – Proudspire Manor',
+        locationName: 'Solitude',
+        sublocationName: 'Proudspire Manor',
         holdName: 'Haafingar',
     },
     {
@@ -68,12 +74,14 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 13,
-        locationName: 'Markarth – Treasury House',
+        locationName: 'Markarth',
+        sublocationName: 'Treasury House',
         holdName: 'The Reach',
     },
     {
         stoneId: 14,
-        locationName: 'Understone Keep – Dwemer Museum',
+        locationName: 'Understone Keep',
+        sublocationName: 'Dwemer Museum',
         holdName: 'The Reach',
     },
     {
@@ -83,12 +91,14 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 16,
-        locationName: 'Mistveil Keep – Jarl\'s Chambers',
+        locationName: 'Mistveil Keep',
+        sublocationName: 'Jarl\'s Chambers',
         holdName: 'The Rift',
     },
     {
         stoneId: 17,
-        locationName: 'Dragonsreach – Jarl\'s Quarters',
+        locationName: 'Dragonsreach',
+        sublocationName: 'Jarl\'s Quarters',
         holdName: 'Whiterun',
     },
     {
@@ -98,17 +108,20 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 19,
-        locationName: 'Jorrvaskr – Living Quarters',
+        locationName: 'Jorrvaskr',
+        sublocationName: 'Living Quarters',
         holdName: 'Whiterun',
     },
     {
         stoneId: 20,
-        locationName: 'Whiterun Hall of the Dead – Whiterun Catacombs',
+        locationName: 'Whiterun Hall of the Dead',
+        sublocationName: 'Whiterun Catacombs',
         holdName: 'Whiterun',
     },
     {
         stoneId: 21,
-        locationName: 'College of Winterhold – Arch-Mage\'s Quarters',
+        locationName: 'College of Winterhold',
+        sublocationName: 'Arch-Mage\'s Quarters',
         holdName: 'Winterhold',
     },
     {
@@ -118,7 +131,8 @@ export const STONE_LIST: StoneLocationData[] = [
     },
     {
         stoneId: 23,
-        locationName: 'Yngvild – Yngvild Throne Room',
+        locationName: 'Yngvild',
+        sublocationName: 'Yngvild Throne Room',
         holdName: 'Winterhold',
     },
 ]

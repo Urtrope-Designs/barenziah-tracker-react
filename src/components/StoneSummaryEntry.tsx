@@ -16,7 +16,7 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, setStoneFo
                 onIonChange={(e) => setStoneFoundStatus(stone.stoneId, e.detail.checked)}
             />
             <IonLabel>
-                <h2>{stone.locationName}</h2>
+                <h2>{stone.locationName}{!!stone.sublocationName ? ' - ' + stone.sublocationName : ''}</h2>
                 <p className="item-note">
                     Hold: {stone.holdName}
                 </p>

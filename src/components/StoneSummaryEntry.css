@@ -1,6 +1,12 @@
+html[mode="ios"] ion-list {
+    --padding-detail: 20px;
+}
+html[mode="md"] ion-list {
+    --padding-detail: 16px;
+}
+
 .stoneSummary_headerLabel {
     z-index: 10;
-    transition: height .5s;
 }
 
 .stoneSummary_showMoreButton {
@@ -8,4 +14,14 @@
 }
 .stoneSummary_showMoreButton.stoneSummary_showMoreButton-detailShown {
     transform: rotate(135deg);
+}
+
+.stoneDetail_wrapper {
+    padding: var(--padding-detail) 0 var(--padding-detail) var(--padding-detail);
+    background-color: var(--ion-color-step-100);
+}
+
+.stoneDetail_inner {
+    border-bottom: var(--border);
+    padding-right: var(--padding-detail);
 }

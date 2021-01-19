@@ -22,6 +22,5 @@ html[mode="md"] ion-list {
 }
 
 .stoneDetail_inner {
-    border-bottom: var(--border);
     padding-right: var(--padding-detail);
 }

@@ -24,10 +24,10 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, setStoneFo
             <IonItemSliding ref={itemSlidingRef}>
                 <IonItem color={(stone.isFound ? 'primary' : undefined)} lines={isDetailShown ? 'none' : 'full'} onClick={(e) => setIsDetailShown(!isDetailShown)}>
                     <IonLabel className="stoneSummary_headerLabel">
-                        <h2>{stoneData.locationName}{!!stoneData.sublocationName ? ' - ' + stoneData.sublocationName : ''}</h2>
-                        <p className="item-note">
-                            Hold: {stone.holdName}
-                        </p>
+                        <h2>{stoneData.locationName}</h2>
+                        {
+                            !!stoneData.sublocationName && <p className="item-note">{stoneData.sublocationName}</p>
+                        }
                     </IonLabel>
                     <IonIcon slot="end" icon={addOutline} className={'stoneSummary_showMoreButton' + (isDetailShown ? ' stoneSummary_showMoreButton-detailShown' : '')}/>
                 </IonItem>

@@ -113,7 +113,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
         </IonHeader>
 
         <IonContent>
-          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.getVisibleStoneLocations()} setStoneFoundStatus={this.props.setStoneFoundStatus} />
+          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.getVisibleStoneLocations()} setStoneFoundStatus={this.props.setStoneFoundStatus} sortMode={undefined} />
         </IonContent>
         <IonFooter>
           <IonToolbar>

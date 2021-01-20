@@ -5,10 +5,11 @@ import { IonList, IonItemDivider, IonLabel } from '@ionic/react';
 
 interface StoneSummaryListProps {
     stoneLocations: StoneLocation[];
+    sortMode: 'groupByHold' | undefined;
     setStoneFoundStatus(stoneId: number, value: boolean): any;
 }
 
-const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, setStoneFoundStatus}) => {
+const groupStonesByHold = (stoneLocations: StoneLocation[], setStoneFoundStatus: (stoneId: number, value: boolean) => any) => {
     const groupedStones: {holdName: string, stones: StoneLocation[]}[] = [];
     stoneLocations.forEach((next: StoneLocation) => {
         const existingGroup = groupedStones.find(group => group.holdName === next.holdName);
@@ -34,17 +35,29 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, setS
         }
         return 0;
     });
-    
+
+    return sortedGroups.map((group: {holdName: string, stones: StoneLocation[]}) => {
+        return [
+            <IonItemDivider key={group.holdName}><IonLabel>Hold: {group.holdName}</IonLabel></IonItemDivider>,
+            group.stones.map(stone => {
+                return <StoneSummaryEntry key={stone.stoneId} stone={stone} setStoneFoundStatus={setStoneFoundStatus} sortMode='groupByHold'/>;
+            })
+        ];
+    })
+}
+
+const unsort = (stoneLocations: StoneLocation[], setStoneFoundStatus: (stoneId: number, value: boolean) => any) => {
+    return stoneLocations.map(stonLoc => {
+        return <StoneSummaryEntry key={stonLoc.stoneId} stone={stonLoc} setStoneFoundStatus={setStoneFoundStatus} sortMode={undefined}/>
+    });
+}
+
+const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sortMode, setStoneFoundStatus}) => {
     return <IonList>
         {
-            sortedGroups.map((group: {holdName: string, stones: StoneLocation[]}) => {
-                return [
-                    <IonItemDivider key={group.holdName}><IonLabel>Hold: {group.holdName}</IonLabel></IonItemDivider>,
-                    group.stones.map(stone => {
-                        return <StoneSummaryEntry key={stone.stoneId} stone={stone} setStoneFoundStatus={setStoneFoundStatus}/>;
-                    })
-                ];
-            })
+            sortMode === 'groupByHold' 
+            ? groupStonesByHold(stoneLocations, setStoneFoundStatus)
+            : unsort(stoneLocations, setStoneFoundStatus)
         }
         </IonList>;
 }

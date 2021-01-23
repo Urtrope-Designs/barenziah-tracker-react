@@ -14,7 +14,7 @@ html[mode="md"] ion-list {
 }
 
 .stoneSummary_showMoreButton {
-    transition: transform .5s ease-out;
+    transition: transform .4s ease-out;
 }
 .stoneSummary_showMoreButton.stoneSummary_showMoreButton-detailShown {
     transform: rotate(135deg);

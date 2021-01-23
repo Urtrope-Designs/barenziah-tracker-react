@@ -12,6 +12,7 @@ export interface toggleShowDetailCallbackContents {
     shouldOpen: boolean;
     startTransition: () => void;
     endTransition: () => void;
+    setClosed: () => void;
 }
 
 interface StoneSummaryEntryProps {
@@ -70,6 +71,9 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
             },
             endTransition: () => {
                 setIsTransitioning(false);
+            },
+            setClosed: () => {
+                setIsDetailShown(false);
             }
         })
     }

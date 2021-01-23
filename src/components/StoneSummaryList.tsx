@@ -57,25 +57,40 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
     const hostRef = useRef<HTMLIonListElement | null>(null);
     const blockerRef = useRef<HTMLDivElement | null>(null);
     let elementsToShift: Array<any>;
+    let currentlyOpen: toggleShowDetailCallbackContents | null = null;
 
     let shiftDownAnimation: Animation;
     let blockerDownAnimation: Animation;
 
     const toggleShowDetail = async (contents: toggleShowDetailCallbackContents) => {
-        // console.log('contents: ', contents);
         if (!hostRef.current || !blockerRef.current) {
             return;
         }
-        contents.shouldOpen ? await animateOpen(contents) : await animateClosed(contents);
+        contents.shouldOpen ? await animateOpen(contents) : await animateClose(contents);
 
         contents.endTransition();
     }
 
+    const closeOpenItem = async () => {
+        if (currentlyOpen !== null) {
+            const itemToClose = currentlyOpen;
+        
+            itemToClose.startTransition();
+            await animateClose(currentlyOpen);
+            itemToClose.endTransition();
+            itemToClose.setClosed();
+            return true;
+        }
+    }
+
     const animateOpen = async (contents: toggleShowDetailCallbackContents) => {
-        console.log('Open!');
         if (!hostRef.current || !blockerRef.current) {
             return;
         }
+
+        // Close any open item first
+        await closeOpenItem();
+        currentlyOpen = contents;
 
         // Create an array of all accordion items
         const items = Array.from(hostRef.current.children);
@@ -96,7 +111,7 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
 
         // Calculate the amount other items need to be shifted
         const amountToShift = contents.content.clientHeight;
-        const openAnimationTime = 300;
+        const openAnimationTime = 400;
 
         // Initially set all items below the one being opened to cover the new content
         // but then animate back to their normal position to reveal the content
@@ -111,7 +126,8 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
             .afterClearStyles(['position', 'z-index'])
             .to('transform', 'translateY(0)')
             .duration(openAnimationTime)
-            .easing('cubic-bezier(0.32,0.72,0,1)');
+            // .easing('cubic-bezier(0.32,0.72,0,1)');
+            .easing('ease-out');
 
         // This blocker element is placed after the last item in the accordion list
         // It will change its height to the height of the content being displayed so that
@@ -125,20 +141,21 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
             })
             .to('transform', 'translateY(0)')
             .duration(openAnimationTime)
-            .easing('cubic-bezier(0.32,0.72,0,1)');
+            // .easing('cubic-bezier(0.32,0.72,0,1)');
+            .easing('ease-out');
 
         return await Promise.all([shiftDownAnimation.play(), blockerDownAnimation.play()]);
     };
 
-    const animateClosed = async (contents: toggleShowDetailCallbackContents) => {
-        console.log('Close!');
+    const animateClose = async (contents: toggleShowDetailCallbackContents) => {
         if (!hostRef.current || !blockerRef.current) {
             return;
         }
 
+        currentlyOpen = null;
         const amountToShift = contents.content.clientHeight;
 
-        const closeAnimationTime = 300;
+        const closeAnimationTime = 400;
 
         // Now we first animate up the elements beneath the content that was opened to cover it
         // and then we set the content back to display: none and remove the transform completely
@@ -154,7 +171,8 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
                 blockerDownAnimation.destroy();
             })
             .duration(closeAnimationTime)
-            .easing('cubic-bezier(0.32,0.72,0,1)');
+            // .easing('cubic-bezier(0.32,0.72,0,1)');
+            .easing('ease-out');
 
         const blockerUpAnimation: Animation = createAnimation()
             .addElement(blockerRef.current)
@@ -163,7 +181,8 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
             })
             .to('transform', `translateY(-${amountToShift}px)`)
             .duration(closeAnimationTime)
-            .easing('cubic-bezier(0.32,0.72,0,1)');
+            // .easing('cubic-bezier(0.32,0.72,0,1)');
+            .easing('ease-out');
 
         await Promise.all([shiftUpAnimation.play(), blockerUpAnimation.play()]);
 

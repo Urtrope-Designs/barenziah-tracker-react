@@ -1,3 +1,7 @@
+.stoneSummary_root {
+    will-change: transform;
+}
+
 html[mode="ios"] ion-list {
     --padding-detail: 20px;
 }
@@ -17,6 +21,7 @@ html[mode="md"] ion-list {
 }
 
 .stoneDetail_wrapper {
+    display: none;
     padding: var(--padding-detail) 0 var(--padding-detail) var(--padding-detail);
     background-color: var(--ion-color-step-100);
 }

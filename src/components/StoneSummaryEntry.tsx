@@ -6,45 +6,77 @@ import { addOutline, checkboxOutline, backspaceOutline } from "ionicons/icons";
 
 import './StoneSummaryEntry.css';
 
+export interface toggleShowDetailCallbackContents {
+    element: HTMLElement;
+    content: HTMLElement;
+    shouldOpen: boolean;
+    startTransition: () => void;
+    endTransition: () => void;
+}
+
 interface StoneSummaryEntryProps {
     stone: StoneLocation;
     sortMode: 'groupByHold' | undefined;
-    setStoneFoundStatus(stoneId: number, value: boolean): any;
+    setStoneFoundStatus: (stoneId: number, value: boolean) => any;
+    toggleShowDetail: (contents: toggleShowDetailCallbackContents) => void;
 }
 
 const buildLabelGroupedByHold = (stoneData: StoneLocationData) => {
-    return [<h2>{stoneData.locationName}</h2>,
-        !!stoneData.sublocationName && <p className="item-note">{stoneData.sublocationName}</p>
-    ];
+    return (
+        <React.Fragment>
+            <h2>{stoneData.locationName}</h2>
+            {
+                !!stoneData.sublocationName && <p className="item-note">{stoneData.sublocationName}</p>
+            }
+        </React.Fragment>
+    );
 }
 const buildLabel = (stoneData: StoneLocationData) => {
-    return [<h2>{stoneData.locationName}{!!stoneData.sublocationName ? ' - ' + stoneData.sublocationName : ''}</h2>,
-        <p className="item-note">
-            Hold: {stoneData.holdName}
-        </p>
-    ];
+    return (
+        <React.Fragment>
+            <h2>{stoneData.locationName}{!!stoneData.sublocationName ? ' - ' + stoneData.sublocationName : ''}</h2>
+            <p className="item-note">
+                Hold: {stoneData.holdName}
+            </p>
+        </React.Fragment>
+    );
 }
 
-const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, setStoneFoundStatus }) => {
+const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, setStoneFoundStatus, toggleShowDetail }) => {
     const [isDetailShown, setIsDetailShown] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const itemSlidingRef = useRef<HTMLIonItemSlidingElement | null>(null);
+    const hostRef = useRef<HTMLDivElement | null>(null);
+    const contentRef = useRef<HTMLDivElement | null>(null);
     const stoneData = STONE_LIST.find(s => s.stoneId === stone.stoneId);
     const toggleStoneFoundStatus = () => {
         setStoneFoundStatus(stone.stoneId, !stone.isFound);
         itemSlidingRef.current?.close()
     }
-    const toggleShowDetail = () => {
-        if (isTransitioning) {
+    const itemClickHandler = () => {
+        if (isTransitioning || !hostRef.current || !contentRef.current) {
             return;
         }
-        setIsDetailShown(!isDetailShown);
+        const shouldOpen = !isDetailShown;
+        setIsDetailShown(shouldOpen);
         setIsTransitioning(true);
+
+        toggleShowDetail({
+            element: hostRef.current,
+            content: contentRef.current,
+            shouldOpen: shouldOpen,
+            startTransition: () => {
+                setIsTransitioning(true);
+            },
+            endTransition: () => {
+                setIsTransitioning(false);
+            }
+        })
     }
     return !!stoneData ? (
-        <div>
+        <div ref={hostRef} className="stoneSummary_root">
             <IonItemSliding ref={itemSlidingRef}>
-                <IonItem color={(stone.isFound ? 'primary' : undefined)} lines={isDetailShown ? 'none' : 'full'} onClick={(e) => setIsDetailShown(!isDetailShown)}>
+                <IonItem color={(stone.isFound ? 'primary' : undefined)} lines={isDetailShown ? 'none' : 'full'} onClick={itemClickHandler}>
                     <IonLabel className="stoneSummary_headerLabel">
                         {
                             sortMode === 'groupByHold'
@@ -60,17 +92,11 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                     </IonItemOption>
                 </IonItemOptions>
             </IonItemSliding>
-            {
-                isDetailShown
-                 ? (
-                    <div className="item-native stoneDetail_wrapper">
-                        <div className="stoneDetail_inner">
-                            {stoneData.stonePlacementDescription}
-                        </div>
-                    </div>
-                  )
-                 : ''
-            }
+            <div ref={contentRef} className="item-native stoneDetail_wrapper">
+                <div className="stoneDetail_inner">
+                    {stoneData.stonePlacementDescription}
+                </div>
+            </div>
         </div>
     ) : null;
 }

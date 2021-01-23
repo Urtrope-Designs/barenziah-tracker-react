@@ -66,8 +66,9 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
         if (!hostRef.current || !blockerRef.current) {
             return;
         }
-        contents.shouldOpen ? await animateOpen(contents) : await animateClose(contents);
 
+        contents.startTransition();
+        contents.shouldOpen ? await animateOpen(contents) : await animateClose(contents);
         contents.endTransition();
     }
 
@@ -78,7 +79,6 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
             itemToClose.startTransition();
             await animateClose(currentlyOpen);
             itemToClose.endTransition();
-            itemToClose.setClosed();
             return true;
         }
     }
@@ -91,6 +91,8 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
         // Close any open item first
         await closeOpenItem();
         currentlyOpen = contents;
+
+        contents.setOpen();
 
         // Create an array of all accordion items
         const items = Array.from(hostRef.current.children);
@@ -153,6 +155,7 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
         }
 
         currentlyOpen = null;
+        contents.setClosed();
         const amountToShift = contents.content.clientHeight;
 
         const closeAnimationTime = 400;

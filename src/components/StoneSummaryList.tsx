@@ -3,6 +3,8 @@ import { StoneLocation } from "../declarations";
 import StoneSummaryEntry, { toggleShowDetailCallbackContents } from "./StoneSummaryEntry";
 import { IonList, IonItemDivider, IonLabel, createAnimation, Animation } from '@ionic/react';
 
+import './StoneSummaryList.css';
+
 interface StoneSummaryListProps {
     stoneLocations: StoneLocation[];
     sortMode: 'groupByHold' | undefined;
@@ -187,8 +189,10 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
             // .easing('cubic-bezier(0.32,0.72,0,1)');
             .easing('ease-out');
 
-        await Promise.all([shiftUpAnimation.play(), blockerUpAnimation.play()]);
-
+        elementsToShift.length
+            ? await Promise.all([shiftUpAnimation.play(), blockerUpAnimation.play()])
+            : await blockerUpAnimation.play();
+        
         // Hide the content again
         contents.content.style.display = 'none';
 
@@ -201,14 +205,14 @@ const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sort
 
     return (
         <React.Fragment>
-            <IonList ref={hostRef}>
+            <IonList ref={hostRef} className="stoneSummaryList">
             {
                 sortMode === 'groupByHold' 
                 ? groupStonesByHold(stoneLocations, setStoneFoundStatus, toggleShowDetail)
                 : unsort(stoneLocations, setStoneFoundStatus, toggleShowDetail)
             }
-            </IonList>;
-            <div ref={blockerRef}></div>
+            </IonList>
+            <div ref={blockerRef} className="stoneSummaryList_blocker"></div>
         </React.Fragment>
     );
 }

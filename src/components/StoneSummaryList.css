@@ -1,8 +1,0 @@
-.stoneSummaryList.list-md {
-    padding: 0;
-}
-
-.stoneSummaryList_blocker {
-    background-color: var(--ion-background-color);
-    will-change: transform;
-}

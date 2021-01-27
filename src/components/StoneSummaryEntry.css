@@ -9,11 +9,22 @@ html[mode="md"] ion-list {
     z-index: 10;
 }
 
+.stoneSummary_locationHeader {
+    color: var(--ion-color-primary-tint);
+}
+[data-is-stone-found=true] .stoneSummary_locationHeader {
+    color: var(--color);
+}
+
 .stoneSummary_showMoreButton {
-    transition: transform .4s ease-out;
+    transition: transform .4s ease-out, color .4s ease-out;
+    color: var(--ion-color-primary-tint);
 }
 .stoneSummary_showMoreButton.stoneSummary_showMoreButton-detailShown {
     transform: rotate(135deg);
+}
+[data-is-stone-found=true] .stoneSummary_showMoreButton {
+    color: var(--color);
 }
 
 .stoneDetail_wrapper {
@@ -27,7 +38,6 @@ html[mode="md"] ion-list {
 }
 
 .stoneDetail_inner {
-    padding: var(--padding-detail) 0 var(--padding-detail) var(--padding-detail);
-
-    padding-right: var(--padding-detail);
+    padding: var(--padding-detail);
+    line-height: 1.25;
 }

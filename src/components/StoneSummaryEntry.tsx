@@ -25,8 +25,11 @@ const buildLabelGroupedByHold = (stoneData: StoneLocationData) => {
 const buildLabel = (stoneData: StoneLocationData) => {
     return (
         <React.Fragment>
-            <h2>{stoneData.locationName}{!!stoneData.sublocationName ? ' - ' + stoneData.sublocationName : ''}</h2>
-            <p className="item-note">
+            <h1 className="stoneSummary_locationHeader">{stoneData.locationName}</h1>
+            {
+                !!stoneData.sublocationName && <h2>{stoneData.sublocationName}</h2>
+            }
+            <p>
                 Hold: {stoneData.holdName}
             </p>
         </React.Fragment>
@@ -43,9 +46,13 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
         itemSlidingRef.current?.close()
     }
     return !!stoneData ? (
-        <div style={{overflow: 'hidden'}}>
+        <div data-is-stone-found={stone.isFound ? true : undefined}>
             <IonItemSliding ref={itemSlidingRef}>
-                <IonItem color={(stone.isFound ? 'primary' : undefined)} lines={isDetailShown ? 'none' : 'full'} onClick={(e) => setIsDetailShown(!isDetailShown)}>
+                <IonItem
+                    color={(stone.isFound ? 'primary' : undefined)}
+                    lines={isDetailShown ? 'none' : 'full'}
+                    onClick={(e) => setIsDetailShown(!isDetailShown)}
+                >
                     <IonLabel className="stoneSummary_headerLabel">
                         {
                             sortMode === 'groupByHold'

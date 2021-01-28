@@ -47,13 +47,13 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
         setIsSettingStoneFound(!stone.isFound);
         setTimeout(() => {
             setStoneFoundStatus(stone.stoneId, !stone.isFound);
-        }, stone.isFound ? 0 : 400);
+        }, stone.isFound ? 0 : 600);
     }
     return !!stoneData ? (
         <div data-is-stone-found={stone.isFound ? true : undefined} data-is-setting-stone-found={isSettingStoneFound ? true : undefined}>
             <IonItemSliding ref={itemSlidingRef}>
                 <IonItem
-                    color={(stone.isFound ? 'primary' : undefined)}
+                    color={(stone.isFound || isSettingStoneFound ? 'primary' : undefined)}
                     lines={isDetailShown ? 'none' : 'full'}
                     onClick={(e) => setIsDetailShown(!isDetailShown)}
                 >

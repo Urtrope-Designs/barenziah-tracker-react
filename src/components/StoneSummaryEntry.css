@@ -17,31 +17,31 @@ html[mode="md"] ion-list {
     background: linear-gradient(70deg,
         rgba(0,0,0,0) 0%,
         rgba(0,0,0,0) 40.9%,
-        rgba(var(--ion-color-primary-rgb),1) 41%,
-        rgba(var(--ion-color-primary-rgb),1) 53%,
-        rgba(0,0,0,0) 53.1%,
-        rgba(0,0,0,0) 60.9%,
-        rgba(var(--ion-color-primary-rgb),1) 61%,
-        rgba(var(--ion-color-primary-rgb),1) 69%,
-        rgba(0,0,0,0) 69.1%,
-        rgba(0,0,0,0) 74%,
-        rgba(var(--ion-color-primary-rgb),1) 74.1%,
-        rgba(var(--ion-color-primary-rgb),1) 78%,
-        rgba(0,0,0,0) 78.1%,
+        rgba(255,255,255,1) 41%,
+        rgba(255,255,255,1) 49%,
+        rgba(0,0,0,0) 49.1%,
+        rgba(0,0,0,0) 57.9%,
+        rgba(255,255,255,1) 58%,
+        rgba(255,255,255,1) 66%,
+        rgba(0,0,0,0) 66.1%,
+        rgba(0,0,0,0) 73%,
+        rgba(255,255,255,1) 73.1%,
+        rgba(255,255,255,1) 76%,
+        rgba(0,0,0,0) 76.1%,
         rgba(0,0,0,0) 82%,
-        rgba(var(--ion-color-primary-rgb),1) 82.1%,
-        rgba(var(--ion-color-primary-rgb),1) 83.9%,
+        rgba(255,255,255,1) 82.1%,
+        rgba(255,255,255,1) 83.9%,
         rgba(0,0,0,0) 84%,
         rgba(0,0,0,0) 100%);
-    animation: setStoneFound 400ms ease-out forwards;
+    animation: setStoneFound 500ms ease-out forwards;
 }
 
 @keyframes setStoneFound {
     0% {
-        transform: scale(1) translateX(-5%);
+        transform: scale(2) translateX(-5%);
     }
     100% {
-        transform: scale(3) translateX(28%);
+        transform: scale(3) translateX(30%);
     }
 }
 
@@ -52,7 +52,7 @@ html[mode="md"] ion-list {
 .stoneSummary_locationHeader {
     color: var(--ion-color-primary-tint);
 }
-[data-is-stone-found=true] .stoneSummary_locationHeader {
+[data-is-stone-found=true] .stoneSummary_locationHeader, [data-is-setting-stone-found=true] .stoneSummary_locationHeader {
     color: var(--ion-color-primary-contrast);
 }
 
@@ -63,7 +63,7 @@ html[mode="md"] ion-list {
 .stoneSummary_showMoreButton.stoneSummary_showMoreButton-detailShown {
     transform: rotate(135deg);
 }
-[data-is-stone-found=true] .stoneSummary_showMoreButton {
+[data-is-stone-found=true] .stoneSummary_showMoreButton, [data-is-setting-stone-found=true] .stoneSummary_showMoreButton {
     color: var(--ion-color-primary-contrast);
 }
 

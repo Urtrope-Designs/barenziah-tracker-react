@@ -53,7 +53,7 @@ html[mode="md"] ion-list {
     color: var(--ion-color-primary-tint);
 }
 [data-is-stone-found=true] .stoneSummary_locationHeader {
-    color: var(--color);
+    color: var(--ion-color-primary-contrast);
 }
 
 .stoneSummary_showMoreButton {
@@ -64,7 +64,7 @@ html[mode="md"] ion-list {
     transform: rotate(135deg);
 }
 [data-is-stone-found=true] .stoneSummary_showMoreButton {
-    color: var(--color);
+    color: var(--ion-color-primary-contrast);
 }
 
 .stoneDetail_wrapper {

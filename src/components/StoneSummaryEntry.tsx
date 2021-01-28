@@ -38,15 +38,19 @@ const buildLabel = (stoneData: StoneLocationData) => {
 
 const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, setStoneFoundStatus }) => {
     const [isDetailShown, setIsDetailShown] = useState(false);
+    const [isSettingStoneFound, setIsSettingStoneFound] = useState(false);
     const itemSlidingRef = useRef<HTMLIonItemSlidingElement | null>(null);
     const stoneDetailInnerRef = useRef<HTMLDivElement | null>(null);
     const stoneData = STONE_LIST.find(s => s.stoneId === stone.stoneId);
     const toggleStoneFoundStatus = () => {
-        setStoneFoundStatus(stone.stoneId, !stone.isFound);
-        itemSlidingRef.current?.close()
+        itemSlidingRef.current?.close();
+        setIsSettingStoneFound(!stone.isFound);
+        setTimeout(() => {
+            setStoneFoundStatus(stone.stoneId, !stone.isFound);
+        }, stone.isFound ? 0 : 400);
     }
     return !!stoneData ? (
-        <div data-is-stone-found={stone.isFound ? true : undefined}>
+        <div data-is-stone-found={stone.isFound ? true : undefined} data-is-setting-stone-found={isSettingStoneFound ? true : undefined}>
             <IonItemSliding ref={itemSlidingRef}>
                 <IonItem
                     color={(stone.isFound ? 'primary' : undefined)}
@@ -61,6 +65,7 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                         }
                     </IonLabel>
                     <IonIcon slot="end" icon={addOutline} className={'stoneSummary_showMoreButton' + (isDetailShown ? ' stoneSummary_showMoreButton-detailShown' : '')}/>
+                    <div className="stoneSummary_background"></div>
                 </IonItem>
                 <IonItemOptions onIonSwipe={toggleStoneFoundStatus}>
                     <IonItemOption expandable color={stone.isFound ? 'danger' : 'primary'} onClick={toggleStoneFoundStatus}>

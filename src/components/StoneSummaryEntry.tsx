@@ -77,12 +77,18 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                 <div className="stoneDetail_inner" ref={stoneDetailInnerRef}>
                     <IonGrid>
                         <IonRow>
-                            <IonCol>
-                                <img src={stoneData.stonePlacementImageUrl} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
-                            </IonCol>
-                            <IonCol>
-                                <img src={stoneData.locationImageUrl} alt={stoneData.locationImageAltText || 'stone location image'}/>
-                            </IonCol>
+                            {
+                                !!stoneData.stonePlacementImageUrl &&
+                                <IonCol>
+                                    <img src={stoneData.stonePlacementImageUrl} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
+                                </IonCol>
+                            }
+                            {
+                                !!stoneData.locationImageUrl &&
+                                <IonCol>
+                                    <img src={stoneData.locationImageUrl} alt={stoneData.locationImageAltText || 'stone location image'}/>
+                                </IonCol>
+                            }
                         </IonRow>
                     </IonGrid>
                     {stoneData.stonePlacementDescription}

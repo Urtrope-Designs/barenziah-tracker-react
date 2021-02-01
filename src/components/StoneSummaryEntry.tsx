@@ -1,5 +1,5 @@
 import { StoneLocation, StoneLocationData } from "../declarations";
-import { IonItem, IonLabel, IonIcon, IonItemSliding, IonItemOptions, IonItemOption, } from "@ionic/react";
+import { IonItem, IonLabel, IonIcon, IonItemSliding, IonItemOptions, IonItemOption, IonGrid, IonRow, IonCol, } from "@ionic/react";
 import React, { useState, useRef } from "react";
 import { STONE_LIST } from "../util/stone-list";
 import { addOutline, checkboxOutline, backspaceOutline } from "ionicons/icons";
@@ -75,6 +75,16 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
             </IonItemSliding>
             <div className={`item-native stoneDetail_wrapper${isDetailShown ? ' stoneDetail_wrapper-detailShown' : ''}`} style={{['--stoneDetail-innerHeight' as any]: `${stoneDetailInnerRef.current?.clientHeight}px`}}>
                 <div className="stoneDetail_inner" ref={stoneDetailInnerRef}>
+                    <IonGrid>
+                        <IonRow>
+                            <IonCol>
+                                <img src={stoneData.stonePlacementImageUrl} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
+                            </IonCol>
+                            <IonCol>
+                                <img src={stoneData.locationImageUrl} alt={stoneData.locationImageAltText || 'stone location image'}/>
+                            </IonCol>
+                        </IonRow>
+                    </IonGrid>
                     {stoneData.stonePlacementDescription}
                 </div>
             </div>

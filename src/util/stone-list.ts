@@ -7,7 +7,10 @@ export const STONE_LIST: StoneLocationData[] = [
         sublocationName: 'Ansilvund Burial Chambers',
         holdName: 'Eastmarch',
         stonePlacementDescription: 'Enter Ansilvund Excavation and complete the objective in the Ansilvund Burial Chambers, and it will be on the table in the back of the final room. Near the Ghostblade and Fjori\'s ghost.',
-        stonePlacementImageUrl: 'https://static.wikia.nocookie.net/elderscrolls/images/4/4c/01_Stone_of_Barenziah.png/revision/latest',
+        stonePlacementImageUrl: 'https://static.wikia.nocookie.net/elderscrolls/images/4/4c/01_Stone_of_Barenziah.png',
+        stonePlacementImageAltText: 'https://static.wikia.nocookie.net/elderscrolls/images/4/4c/01_Stone_of_Barenziah.png',
+        locationImageUrl: 'https://static.wikia.nocookie.net/elderscrolls/images/4/4d/Ansilvund_Map2.jpg',
+        locationImageAltText: 'https://static.wikia.nocookie.net/elderscrolls/images/4/4d/Ansilvund_Map2.jpg'
     },
     {
         stoneId: 1,

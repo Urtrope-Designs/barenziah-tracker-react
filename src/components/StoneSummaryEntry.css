@@ -81,3 +81,18 @@ html[mode="md"] ion-list {
     padding: var(--padding-detail);
     line-height: 1.25;
 }
+
+.stoneDetail_inner ion-grid {
+    --ion-grid-padding: 0;
+}
+
+.stoneDetail_inner ion-col {
+    --ion-grid-column-padding: 0;
+    margin-bottom: .6rem;
+}
+.stoneDetail_inner ion-col:first-of-type {
+    padding-right: 5px;
+}
+.stoneDetail_inner ion-col:not(:first-of-type) {
+    padding-left: 5px;
+}

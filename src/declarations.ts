@@ -18,6 +18,9 @@ export interface StoneLocationData {
   stonePlacementDescription: string;
   holdName: 'Eastmarch'|'Falkreath'|'Haafingar'|'Hjaalmarch'|'The Reach'|'The Rift'|'Whiterun'|'Winterhold';
   stonePlacementImageUrl?: string;
+  stonePlacementImageAltText?: string;
+  locationImageUrl?: string;
+  locationImageAltText?: string;
 }
 
 export interface StoneLocation extends StoneLocationData{

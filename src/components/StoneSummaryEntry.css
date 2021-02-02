@@ -89,6 +89,10 @@ html[mode="md"] ion-list {
 .stoneDetail_inner ion-col {
     --ion-grid-column-padding: 0;
     margin-bottom: .6rem;
+    max-height: 80px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
 }
 .stoneDetail_inner ion-col:first-of-type {
     padding-right: 5px;

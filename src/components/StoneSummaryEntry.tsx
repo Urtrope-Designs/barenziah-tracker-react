@@ -1,4 +1,4 @@
-import { StoneLocation, StoneLocationData } from "../declarations";
+import { StoneLocation, StoneLocationData, ImageDetails } from "../declarations";
 import { IonItem, IonLabel, IonIcon, IonItemSliding, IonItemOptions, IonItemOption, IonGrid, IonRow, IonCol, } from "@ionic/react";
 import React, { useState, useRef } from "react";
 import { STONE_LIST } from "../util/stone-list";
@@ -10,6 +10,7 @@ interface StoneSummaryEntryProps {
     stone: StoneLocation;
     sortMode: 'groupByHold' | undefined;
     setStoneFoundStatus: (stoneId: number, value: boolean) => any;
+    setFocusImage: (focusImage: ImageDetails | null) => any;
 }
 
 const buildLabelGroupedByHold = (stoneData: StoneLocationData) => {
@@ -36,7 +37,7 @@ const buildLabel = (stoneData: StoneLocationData) => {
     );
 }
 
-const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, setStoneFoundStatus }) => {
+const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, setStoneFoundStatus, setFocusImage }) => {
     const [isDetailShown, setIsDetailShown] = useState(false);
     const [isSettingStoneFound, setIsSettingStoneFound] = useState(false);
     const itemSlidingRef = useRef<HTMLIonItemSlidingElement | null>(null);
@@ -79,13 +80,13 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                         <IonRow>
                             {
                                 !!stoneData.stonePlacementImageUrl &&
-                                <IonCol>
+                                <IonCol onClick={() => {setFocusImage({imageUrl: stoneData.stonePlacementImageUrl || '', imageAltText: stoneData.stonePlacementImageAltText || ''})}}>
                                     <img src={stoneData.stonePlacementImageUrl} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
                                 </IonCol>
                             }
                             {
                                 !!stoneData.locationImageUrl &&
-                                <IonCol>
+                                <IonCol onClick={() => {setFocusImage({imageUrl: stoneData.locationImageUrl || '', imageAltText: stoneData.locationImageAltText || ''})}}>
                                     <img src={stoneData.locationImageUrl} alt={stoneData.locationImageAltText || 'stone location image'}/>
                                 </IonCol>
                             }

@@ -1,6 +1,6 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter, IonModal } from '@ionic/react';
 import React from 'react';
-import { StoneChecklist } from '../declarations';
+import { StoneChecklist, ImageDetails } from '../declarations';
 import StoneSummaryList from '../components/StoneSummaryList';
 import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
 
@@ -16,6 +16,7 @@ interface ChecklistPageProps {
 
 interface ChecklistPageState {
   checklistNameEdit: string;
+  focusImage: ImageDetails | null;
 }
 
 class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageState> {
@@ -25,6 +26,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     super(props);
     this.state = {
       checklistNameEdit: props.checklist.checklistName,
+      focusImage: null,
     }
 
     this.checklistNameEditSaveButton = React.createRef();
@@ -73,6 +75,10 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     this.props.updateChecklistName(this.state.checklistNameEdit);
   }
 
+  handleSetFocusImage = (newFocusImage: ImageDetails | null) => {
+    this.setState({focusImage: newFocusImage});
+  }
+
   getVisibleStoneLocations = () => {
     if (this.props.checklist.hideCompletedStones) {
       return this.props.checklist.stoneLocations.filter(stonLoc => !stonLoc.isFound);
@@ -111,9 +117,20 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
             </IonButtons>
           </IonToolbar>
         </IonHeader>
-
         <IonContent>
-          <StoneSummaryList key={this.props.checklist.checklistId} stoneLocations={this.getVisibleStoneLocations()} setStoneFoundStatus={this.props.setStoneFoundStatus} sortMode={undefined} />
+          <StoneSummaryList
+            key={this.props.checklist.checklistId}
+            stoneLocations={this.getVisibleStoneLocations()}
+            setStoneFoundStatus={this.props.setStoneFoundStatus}
+            sortMode={undefined}
+            setFocusImage={this.handleSetFocusImage}
+          />
+          <IonModal isOpen={!!this.state.focusImage} cssClass="focusImageModal">
+            <div className="focusImageModal_wrapper">
+              <img src={this.state.focusImage?.imageUrl} alt={this.state.focusImage?.imageAltText} />
+            </div>
+            <IonButton expand="full" onClick={() => this.handleSetFocusImage(null)}>Close</IonButton>
+          </IonModal>
         </IonContent>
         <IonFooter>
           <IonToolbar>

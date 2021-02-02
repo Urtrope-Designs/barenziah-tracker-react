@@ -33,3 +33,8 @@ export interface StoneChecklist {
   stoneLocations: StoneLocation[];
   hideCompletedStones: boolean;
 }
+
+export interface ImageDetails {
+  imageUrl: string;
+  imageAltText: string;
+}

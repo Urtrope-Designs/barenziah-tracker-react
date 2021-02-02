@@ -1,5 +1,5 @@
 import React from 'react';
-import { StoneLocation } from "../declarations";
+import { StoneLocation, ImageDetails } from "../declarations";
 import StoneSummaryEntry from "./StoneSummaryEntry";
 import { IonList, IonItemDivider, IonLabel } from '@ionic/react';
 
@@ -7,9 +7,10 @@ interface StoneSummaryListProps {
     stoneLocations: StoneLocation[];
     sortMode: 'groupByHold' | undefined;
     setStoneFoundStatus(stoneId: number, value: boolean): any;
+    setFocusImage(focusImage: ImageDetails | null): any;
 }
 
-const groupStonesByHold = (stoneLocations: StoneLocation[], setStoneFoundStatus: (stoneId: number, value: boolean) => any) => {
+const groupStonesByHold = (stoneLocations: StoneLocation[], setStoneFoundStatus: (stoneId: number, value: boolean) => any, setFocusImage: (focusImage: ImageDetails | null) => any) => {
     const groupedStones: {holdName: string, stones: StoneLocation[]}[] = [];
     stoneLocations.forEach((next: StoneLocation) => {
         const existingGroup = groupedStones.find(group => group.holdName === next.holdName);
@@ -40,25 +41,25 @@ const groupStonesByHold = (stoneLocations: StoneLocation[], setStoneFoundStatus:
         return [
             <IonItemDivider key={group.holdName}><IonLabel>Hold: {group.holdName}</IonLabel></IonItemDivider>,
             group.stones.map(stone => {
-                return <StoneSummaryEntry key={stone.stoneId} stone={stone} setStoneFoundStatus={setStoneFoundStatus} sortMode='groupByHold'/>;
+                return <StoneSummaryEntry key={stone.stoneId} stone={stone} setStoneFoundStatus={setStoneFoundStatus} sortMode='groupByHold' setFocusImage={setFocusImage}/>;
             })
         ];
     })
 }
 
-const unsort = (stoneLocations: StoneLocation[], setStoneFoundStatus: (stoneId: number, value: boolean) => any) => {
+const unsort = (stoneLocations: StoneLocation[], setStoneFoundStatus: (stoneId: number, value: boolean) => any, setFocusImage: (focusImage: ImageDetails | null) => any) => {
     return stoneLocations.map(stonLoc => {
-        return <StoneSummaryEntry key={stonLoc.stoneId} stone={stonLoc} setStoneFoundStatus={setStoneFoundStatus} sortMode={undefined}/>
+        return <StoneSummaryEntry key={stonLoc.stoneId} stone={stonLoc} setStoneFoundStatus={setStoneFoundStatus} sortMode={undefined} setFocusImage={setFocusImage}/>
     });
 }
 
 
-const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sortMode, setStoneFoundStatus}) => {
+const StoneSummaryList: React.FC<StoneSummaryListProps> = ({stoneLocations, sortMode, setStoneFoundStatus, setFocusImage}) => {
     return <IonList>
             {
                 sortMode === 'groupByHold' 
-                ? groupStonesByHold(stoneLocations, setStoneFoundStatus)
-                : unsort(stoneLocations, setStoneFoundStatus)
+                ? groupStonesByHold(stoneLocations, setStoneFoundStatus, setFocusImage)
+                : unsort(stoneLocations, setStoneFoundStatus, setFocusImage)
             }
             </IonList>;
 }

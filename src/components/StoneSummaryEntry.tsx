@@ -79,15 +79,27 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                     <IonGrid>
                         <IonRow>
                             {
-                                !!stoneData.stonePlacementImageUrl &&
-                                <IonCol onClick={() => {setFocusImage({imageUrl: stoneData.stonePlacementImageUrl || '', imageAltText: stoneData.stonePlacementImageAltText || ''})}}>
-                                    <img src={stoneData.stonePlacementImageUrl} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
+                                !!stoneData.stonePlacementImageFilename &&
+                                <IonCol onClick={() => {
+                                        setFocusImage({
+                                            imageTitle: stoneData.sublocationName || stoneData.locationName || '',
+                                            imageUrl: stoneData.stonePlacementImageFilename || '',
+                                            imageAltText: stoneData.stonePlacementImageAltText || '',
+                                        });
+                                    }}>
+                                    <img src={stoneData.stonePlacementImageFilename} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
                                 </IonCol>
                             }
                             {
-                                !!stoneData.locationImageUrl &&
-                                <IonCol onClick={() => {setFocusImage({imageUrl: stoneData.locationImageUrl || '', imageAltText: stoneData.locationImageAltText || ''})}}>
-                                    <img src={stoneData.locationImageUrl} alt={stoneData.locationImageAltText || 'stone location image'}/>
+                                !!stoneData.locationImageFilename &&
+                                <IonCol onClick={() => {
+                                        setFocusImage({
+                                            imageTitle: stoneData.sublocationName || stoneData.locationName || '',
+                                            imageUrl: stoneData.locationImageFilename || '',
+                                            imageAltText: stoneData.locationImageAltText || ''
+                                        });
+                                    }}>
+                                    <img src={stoneData.locationImageFilename} alt={stoneData.locationImageAltText || 'stone location image'}/>
                                 </IonCol>
                             }
                         </IonRow>

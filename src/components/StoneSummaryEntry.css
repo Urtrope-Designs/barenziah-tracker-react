@@ -49,6 +49,11 @@ html[mode="md"] ion-list {
     z-index: 10;
 }
 
+.stoneSummary_headerLabel p {
+    /* color: #FD5C85; */
+    color: var(--ion-color-warning);
+}
+
 .stoneSummary_locationHeader {
     color: var(--ion-color-primary-tint);
 }

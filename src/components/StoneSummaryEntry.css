@@ -93,6 +93,7 @@ html[mode="md"] ion-list {
     overflow: hidden;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 .stoneDetail_inner ion-col:first-of-type {
     padding-right: 5px;

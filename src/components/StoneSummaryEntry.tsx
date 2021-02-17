@@ -5,6 +5,7 @@ import { STONE_LIST } from "../util/stone-list";
 import { addOutline, checkboxOutline, backspaceOutline } from "ionicons/icons";
 
 import './StoneSummaryEntry.css';
+import useCheckMobileScreen from "../util/use-check-mobile-screen";
 
 interface StoneSummaryEntryProps {
     stone: StoneLocation;
@@ -50,6 +51,8 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
             setStoneFoundStatus(stone.stoneId, !stone.isFound);
         }, stone.isFound ? 0 : 600);
     }
+    const placementImgSrc = '/assets/stonePlacement/' + (useCheckMobileScreen() ? 'thumbs/' : '') + (stoneData?.stonePlacementImageFilename ?? 'missing.jpg');
+    const locationImgSrc = '/assets/stoneLocations/' + (useCheckMobileScreen() ? 'thumbs/' : '') + (stoneData?.locationImageFilename ?? 'missing.jpg');
     return !!stoneData ? (
         <div data-is-stone-found={stone.isFound ? true : undefined} data-is-setting-stone-found={isSettingStoneFound ? true : undefined}>
             <IonItemSliding ref={itemSlidingRef}>
@@ -79,7 +82,7 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                     <IonGrid>
                         <IonRow>
                             {
-                                !!stoneData.stonePlacementImageFilename &&
+                                !!stoneData.stonePlacementImageFilename && !!placementImgSrc &&
                                 <IonCol onClick={() => {
                                         setFocusImage({
                                             imageTitle: stoneData.sublocationName || stoneData.locationName || '',
@@ -87,11 +90,11 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                                             imageAltText: stoneData.stonePlacementImageAltText || '',
                                         });
                                     }}>
-                                    <img src={'/assets/stonePlacement/' + stoneData.stonePlacementImageFilename} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
+                                    <img src={placementImgSrc} alt={stoneData.stonePlacementImageAltText || 'stone placement image'}/>
                                 </IonCol>
                             }
                             {
-                                !!stoneData.locationImageFilename &&
+                                !!stoneData.locationImageFilename && !!locationImgSrc &&
                                 <IonCol onClick={() => {
                                         setFocusImage({
                                             imageTitle: stoneData.sublocationName || stoneData.locationName || '',
@@ -99,7 +102,7 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
                                             imageAltText: stoneData.locationImageAltText || ''
                                         });
                                     }}>
-                                    <img src={'/assets/stoneLocations/' + stoneData.locationImageFilename} alt={stoneData.locationImageAltText || 'stone location image'}/>
+                                    <img src={locationImgSrc} alt={stoneData.locationImageAltText || 'stone location image'}/>
                                 </IonCol>
                             }
                         </IonRow>

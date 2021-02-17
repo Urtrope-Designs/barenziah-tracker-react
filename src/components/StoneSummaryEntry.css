@@ -100,3 +100,8 @@ html[mode="md"] ion-list {
 .stoneDetail_inner ion-col:not(:first-of-type) {
     padding-left: 5px;
 }
+@media(min-width: 768px) {
+    .stoneDetail_inner ion-col {
+        max-height: 120px;
+    }
+}

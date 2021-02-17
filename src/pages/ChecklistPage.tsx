@@ -126,17 +126,21 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
             setFocusImage={this.handleSetFocusImage}
           />
           <IonModal isOpen={!!this.state.focusImage} cssClass="focusImageModal">
-            {this.state.focusImage?.imageTitle &&
-              <IonHeader className="ion-no-border">
-                <IonToolbar>
-                  <IonTitle className="ion-text-center">{this.state.focusImage?.imageTitle}</IonTitle>
-                </IonToolbar>
-              </IonHeader>
-            }
-            <div className="focusImageModal_wrapper">
-              <img src={this.state.focusImage?.imageUrl} alt={this.state.focusImage?.imageAltText} />
-            </div>
-            <IonButton expand="full" onClick={() => this.handleSetFocusImage(null)}>Close</IonButton>
+            <IonPage>
+              {this.state.focusImage?.imageTitle &&
+                <IonHeader className="ion-no-border">
+                  <IonToolbar>
+                    <IonTitle className="ion-text-center">{this.state.focusImage?.imageTitle}</IonTitle>
+                  </IonToolbar>
+                </IonHeader>
+              }
+              <IonContent>
+                <div className="focusImageModal_wrapper">
+                  <img src={this.state.focusImage?.imageUrl} alt={this.state.focusImage?.imageAltText} />
+                </div>
+              </IonContent>
+              <IonButton expand="full" onClick={() => this.handleSetFocusImage(null)}>Close</IonButton>
+            </IonPage>
           </IonModal>
         </IonContent>
         <IonFooter>

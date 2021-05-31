@@ -33,12 +33,12 @@ html[mode="md"] ion-list {
         rgba(255,255,255,1) 83.9%,
         rgba(0,0,0,0) 84%,
         rgba(0,0,0,0) 100%);
-    animation: setStoneFound 500ms ease-out forwards;
+    animation: setStoneFound 1000ms ease-out forwards;
 }
 
 @keyframes setStoneFound {
     0% {
-        transform: scale(2) translateX(-5%);
+        transform: scale(2) translateX(-35%);
     }
     100% {
         transform: scale(3) translateX(30%);
@@ -56,6 +56,7 @@ html[mode="md"] ion-list {
 
 .stoneSummary_locationHeader {
     color: var(--ion-color-primary-tint);
+    font-weight: bold;
 }
 [data-is-stone-found=true] .stoneSummary_locationHeader, [data-is-setting-stone-found=true] .stoneSummary_locationHeader {
     color: var(--ion-color-primary-contrast);

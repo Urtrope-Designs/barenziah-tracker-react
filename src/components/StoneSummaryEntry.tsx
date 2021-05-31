@@ -49,7 +49,7 @@ const StoneSummaryEntry: React.FC<StoneSummaryEntryProps> = ({ stone, sortMode, 
         setIsSettingStoneFound(!stone.isFound);
         setTimeout(() => {
             setStoneFoundStatus(stone.stoneId, !stone.isFound);
-        }, stone.isFound ? 0 : 600);
+        }, stone.isFound ? 0 : 1100);
     }
     const placementImgSrc = '/assets/stonePlacement/' + (useCheckMobileScreen() ? 'thumbs/' : '') + (stoneData?.stonePlacementImageFilename ?? 'missing.jpg');
     const locationImgSrc = '/assets/stoneLocations/' + (useCheckMobileScreen() ? 'thumbs/' : '') + (stoneData?.locationImageFilename ?? 'missing.jpg');

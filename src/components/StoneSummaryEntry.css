@@ -54,7 +54,7 @@ html[mode="md"] ion-list {
     color: var(--ion-color-warning);
 }
 
-.stoneSummary_locationHeader {
+.stoneSummary_headerLabel .stoneSummary_locationHeader {
     color: var(--ion-color-primary-tint);
     font-weight: bold;
 }

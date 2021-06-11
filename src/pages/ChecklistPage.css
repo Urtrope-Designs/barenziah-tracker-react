@@ -8,3 +8,7 @@ ion-button.button-disabled {
     flex-direction: column;
     justify-content: center;
 }
+
+.focusImageModal .ion-page ion-button {
+    margin: 1rem 1.6rem;
+}

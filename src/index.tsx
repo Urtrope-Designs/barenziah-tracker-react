@@ -17,4 +17,4 @@ function toggleDarkTheme(shouldAdd: boolean) {
   document.body.classList.toggle('dark', shouldAdd);
 }
 
-ReactDOM.render(<BtrApp />, document.getElementById('root'));
+ReactDOM.render(<BtrApp />, document.getElementById('btr_app'));

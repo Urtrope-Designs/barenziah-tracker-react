@@ -12,7 +12,7 @@ const ChecklistSummaryEntry: React.FC<ChecklistSummaryEntryProps> = ( {checklist
     return (
         <IonItem onClick={() => {entryClicked(checklistSummary.checklistId)}} color={isHighlighted ? 'primary' : undefined} routerDirection="none">
             <IonLabel>{checklistSummary.checklistName}</IonLabel>
-            <IonBadge color="medium" slot="end">{checklistSummary.numStonesToFind}</IonBadge>
+            <IonBadge color="warning" slot="end">{checklistSummary.numStonesToFind}</IonBadge>
         </IonItem>
     )
 }

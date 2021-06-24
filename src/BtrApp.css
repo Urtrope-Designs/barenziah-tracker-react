@@ -1,0 +1,12 @@
+html.ios #btr_app {
+    --ion-default-font: "Montserrat", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Roboto", sans-serif;
+}
+
+html.md #btr_app {
+    --ion-default-font: "Montserrat", "Roboto", "Helvetica Neue", sans-serif;
+}
+
+html #btr_app {
+    --ion-font-family: var(--ion-default-font);
+    font-family: var(--ion-font-family);
+}

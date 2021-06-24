@@ -28,6 +28,8 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import FullPageLoader from './components/FullPageLoader';
 
+import './BtrApp.css';
+
 const firebaseConfig = {
     apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
     authDomain: "barenziah-tracker.firebaseapp.com",

@@ -1,6 +1,7 @@
 #btr_app .firebaseui-container {
     background-color: var(--ion-card-background);
     color: var(--ion-text-color);
+    font-family: var(--ion-font-family);
 }
 
 #btr_app .firebaseui-title, #btr_app .firebaseui-subtitle, #btr_app .firebaseui-label, #btr_app .firebaseui-input, #btr_app .firebaseui-input-invalid, #btr_app .firebaseui-text {
@@ -17,4 +18,8 @@
 
 #btr_app .firebaseui-link {
     color: var(--ion-color-primary);
+}
+
+#btr_app .mdl-button, #btr_app .firebaseui-input {
+    font-family: var(--ion-font-family);
 }

@@ -56,7 +56,8 @@ html[mode="md"] ion-list {
 
 .stoneSummary_headerLabel .stoneSummary_locationHeader {
     color: var(--ion-color-primary-tint);
-    font-weight: bold;
+    font-weight: 600;
+    white-space: normal;
 }
 [data-is-stone-found=true] .stoneSummary_locationHeader, [data-is-setting-stone-found=true] .stoneSummary_locationHeader {
     color: var(--ion-color-primary-contrast);

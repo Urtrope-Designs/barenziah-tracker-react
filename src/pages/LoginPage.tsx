@@ -11,7 +11,9 @@ interface LoginPageProps {
 
 const uiConfig: firebaseui.auth.Config = {
     signInFlow: 'popup',
-    signInSuccessUrl: '/',
+    callbacks: {
+        signInSuccessWithAuthResult: () => false,
+    },
     signInOptions: [
         {
             provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,

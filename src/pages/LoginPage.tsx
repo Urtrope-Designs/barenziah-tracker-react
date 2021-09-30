@@ -21,6 +21,8 @@ const uiConfig: firebaseui.auth.Config = {
         },
     ],
     credentialHelper: 'none',
+    privacyPolicyUrl: 'https://www.termsfeed.com/live/ae0253cc-690a-43e6-9961-26964c15b6eb',
+    tosUrl: 'https://www.termsfeed.com/live/9ffc9d1f-0e53-4431-b2d5-a100b15a9f29',
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {

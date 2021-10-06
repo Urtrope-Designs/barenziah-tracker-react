@@ -1,10 +1,12 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter, IonModal } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter } from '@ionic/react';
 import React from 'react';
 import { StoneChecklist, ImageDetails } from '../declarations';
 import StoneSummaryList from '../components/StoneSummaryList';
 import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
+import Lightbox from 'react-image-lightbox';
 
 import './ChecklistPage.css';
+import 'react-image-lightbox/style.css';
 
 interface ChecklistPageProps {
   pageElemId?: string;
@@ -125,23 +127,12 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
             sortMode={undefined}
             setFocusImage={this.handleSetFocusImage}
           />
-          <IonModal isOpen={!!this.state.focusImage} cssClass="focusImageModal">
-            <IonPage>
-              {this.state.focusImage?.imageTitle &&
-                <IonHeader className="ion-no-border">
-                  <IonToolbar>
-                    <IonTitle className="ion-text-center">{this.state.focusImage?.imageTitle}</IonTitle>
-                  </IonToolbar>
-                </IonHeader>
-              }
-              <IonContent>
-                <div className="focusImageModal_wrapper">
-                  <img src={this.state.focusImage?.imageUrl} alt={this.state.focusImage?.imageAltText} />
-                </div>
-              </IonContent>
-              <IonButton expand="full" onClick={() => this.handleSetFocusImage(null)}>Close</IonButton>
-            </IonPage>
-          </IonModal>
+          {!!this.state.focusImage && (
+            <Lightbox
+              mainSrc={this.state.focusImage.imageUrl}
+              onCloseRequest={() => this.handleSetFocusImage(null)}
+            />
+          )}
         </IonContent>
         <IonFooter>
           <IonToolbar>

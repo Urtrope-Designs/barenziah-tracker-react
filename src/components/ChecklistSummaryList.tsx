@@ -160,7 +160,7 @@ class ChecklistSummaryList extends React.Component<ChecklistSummaryListProps, Ch
                 <h1>All about it</h1>
                 <p>This app was lovingly crafted by <a href="https://urtropedesigns.com/" target="_blank" rel="noreferrer noopener">Urtrope Designs</a>. 
                 {Capacitor.isNativePlatform() 
-                  ? <span>If you find it rad or at least mildly useful, please <a href={Capacitor.getPlatform() === "ios" ? "https://apps.apple.com/us/app/barenziah-tracker/id1585514338" : "https://play.google.com/store/apps/details?id=com.urtropedesigns.barenziahtracker"} target="_blank" rel="noreferrer noopener">rate or review it</a>!</span>
+                  ? <span> If you find it rad or at least mildly useful, please <a href={Capacitor.getPlatform() === "ios" ? "https://apps.apple.com/us/app/barenziah-tracker/id1585514338" : "https://play.google.com/store/apps/details?id=com.urtropedesigns.barenziahtracker"} target="_blank" rel="noreferrer noopener">rate or review it</a>!</span>
                   : ''
                 }
                 </p>

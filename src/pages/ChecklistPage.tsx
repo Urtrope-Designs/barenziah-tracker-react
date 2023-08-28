@@ -125,7 +125,7 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
             sortMode={undefined}
             setFocusImage={this.handleSetFocusImage}
           />
-          <IonModal isOpen={!!this.state.focusImage} cssClass="focusImageModal">
+          <IonModal isOpen={!!this.state.focusImage} class="focusImageModal">
             <IonPage>
               {this.state.focusImage?.imageTitle &&
                 <IonHeader className="ion-no-border">

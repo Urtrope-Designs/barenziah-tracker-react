@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Route, Redirect } from 'react-router';
-import { IonApp, IonRouterOutlet } from '@ionic/react';
+import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { initializeApp } from 'firebase/app';
+import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import React, { useEffect, useState } from 'react';
+import { Redirect, Route } from 'react-router';
 
 import UserChecklistsManager from './components/UserChecklistsManager';
 import LoginPage from './pages/LoginPage';
@@ -17,18 +17,20 @@ import '@ionic/react/css/structure.css';
 import '@ionic/react/css/typography.css';
 
 /* Optional CSS utils that can be commented out */
-import '@ionic/react/css/padding.css';
+import '@ionic/react/css/display.css';
+import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/float-elements.css';
+import '@ionic/react/css/padding.css';
 import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
-import '@ionic/react/css/flex-utils.css';
-import '@ionic/react/css/display.css';
 
 /* Theme variables */
-import './theme/variables.css';
 import FullPageLoader from './components/FullPageLoader';
+import './theme/variables.css';
 
 import './BtrApp.css';
+
+setupIonicReact();
 
 const firebaseConfig = {
     apiKey: "AIzaSyDADjVbhrMqC0SV36K5pvrcdQnlJhSrc2I",
@@ -40,16 +42,16 @@ const firebaseConfig = {
     appId: "1:23343523090:web:5ec809772a7ed187dd3fcb",
     measurementId: "G-2C0BE53KXX"
 };
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
 
 const logOut = () => {
-    firebaseApp.auth().signOut();
+    getAuth(firebaseApp).signOut();
 }
 
 const BtrApp: React.FC = () => {
-    const [currentUser, setCurrentUser] = useState<firebase.User | null | undefined>(undefined);
+    const [currentUser, setCurrentUser] = useState<User | null | undefined>(undefined);
     useEffect(() => {
-        const unregisterAuthObserver = firebaseApp.auth().onAuthStateChanged((user) => {
+        const unregisterAuthObserver = onAuthStateChanged(getAuth(firebaseApp), user => {
             setCurrentUser(user);
         })
 

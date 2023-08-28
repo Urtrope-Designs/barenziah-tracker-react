@@ -1,12 +1,13 @@
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
-import firebase from 'firebase/app';
 import FirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/react';
 
+import { FirebaseApp } from 'firebase/app';
+import { EmailAuthProvider, getAuth } from 'firebase/auth';
 import '../theme/firebaseui-styling.global.css';
 
 interface LoginPageProps {
-    firebaseApp: firebase.app.App;
+    firebaseApp: FirebaseApp;
 }
 
 const uiConfig: firebaseui.auth.Config = {
@@ -16,7 +17,7 @@ const uiConfig: firebaseui.auth.Config = {
     },
     signInOptions: [
         {
-            provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+            provider: EmailAuthProvider.PROVIDER_ID,
             requireDisplayName: false,
         },
     ],
@@ -34,7 +35,7 @@ const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent class="ion-padding">
-                <FirebaseAuth className={'firebaseUi'} uiConfig={uiConfig} firebaseAuth={firebaseApp.auth()} />
+                <FirebaseAuth className={'firebaseUi'} uiConfig={uiConfig} firebaseAuth={getAuth(firebaseApp)} />
             </IonContent>
         </IonPage>
     );

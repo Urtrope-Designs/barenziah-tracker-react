@@ -37,12 +37,6 @@ interface ChecklistSummaryListProps extends RouteComponentProps {
   logOutClicked(): any;
 }
 
-interface ChecklistSummaryListState {
-  newChecklistName: string;
-  requestedDeleteChecklistId: string | null;
-  showAboutModal: boolean;
-}
-
 const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
   checklistSummaries, activeChecklistId, addNewChecklist, activateChecklist, deleteChecklist, logOutClicked,
 }) => {

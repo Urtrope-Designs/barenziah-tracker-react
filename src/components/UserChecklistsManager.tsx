@@ -1,159 +1,147 @@
-import React from 'react';
 import { IonSplitPane } from '@ionic/react';
-import ChecklistSummaryList from './ChecklistSummaryList';
-import { getChecklistSummaries, createNewStoneChecklist } from '../util/user-checklists';
-import ChecklistPage from '../pages/ChecklistPage';
+import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StoneChecklist } from '../declarations';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import ChecklistPage from '../pages/ChecklistPage';
+import { createNewStoneChecklist, getChecklistSummaries } from '../util/user-checklists';
+import ChecklistSummaryList from './ChecklistSummaryList';
 import FullPageLoader from './FullPageLoader';
-
-let db: firebase.firestore.Firestore;
+import { FirebaseApp } from 'firebase/app';
 
 interface UserChecklistManagerProps {
     logOutClicked(): any;
-    firebaseApp: firebase.app.App;
+    firebaseApp: FirebaseApp;
     userId: string;
 }
 
-interface UserChecklistManagerState {
-    userChecklists: StoneChecklist[];
-    activeChecklistId: string;
-}
+const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp, userId, logOutClicked}) => {
+    const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>([]);
+    const [activeChecklistId, setActiveChecklistId] = useState<string | null>(null);
+    const db = getFirestore(firebaseApp);
 
-class UserChecklistsManager extends React.Component<UserChecklistManagerProps, UserChecklistManagerState> {
-    constructor(props: any) {
-        super(props);
-        db = props.firebaseApp.firestore();
-        db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).collection('checklists').onSnapshot(querySnapshot => {
-            if (querySnapshot.size < 1) {
-                this.addNewChecklist('Untitled');
-            } else {
-                this.setState({userChecklists: querySnapshot.docs.map(this.hydrateChecklistFromFB)});
-            }
-        });
-        db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).onSnapshot(querySnapshot => {
-            const queryData = querySnapshot.data();
-            if (queryData !== undefined) {
-                this.setState({activeChecklistId: queryData.activeChecklistId});
-            }
-        });
-    }
-
-    private updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
-        this.setState(({userChecklists}) => {
-            const listToUpdate = userChecklists.find(checklist => checklist.checklistId === checklistToUpdateId);
-            if (listToUpdate == null) {
-                console.error(`${callerName}() invalid checklistId: ${checklistToUpdateId}`);
-                return {userChecklists: userChecklists};
-            }
-
+    const updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
+        const listToUpdate = userChecklists.find(checklist => checklist.checklistId === checklistToUpdateId);
+        if (listToUpdate == null) {
+            console.error(`${callerName}() invalid checklistId: ${checklistToUpdateId}`);
+        } else {
             const newList: StoneChecklist = updateFunc(listToUpdate);
 
-            const userDoc = db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid);
-            userDoc.collection('checklists').doc(checklistToUpdateId).set(newList);
+            setDoc(doc(db, 'users', userId, 'checklists', checklistToUpdateId), newList);
 
             return null;
+        };
+    }
+
+    const setStoneFoundStatus = (checklistId: string, stoneId: number, value: boolean) => {
+        updateStoneListData(checklistId, 'setStoneFoundStatus', (curList: StoneChecklist) => {
+            return {
+                ...curList, 
+                stoneLocations: curList.stoneLocations.map(stonLoc => {
+                    if (stonLoc.stoneId === stoneId) {
+                        return {...stonLoc, isFound: value};
+                    } else {
+                        return {...stonLoc}
+                    }
+                })
+            }
         });
     }
 
-    setStoneFoundStatus = (checklistId: string, stoneId: number, value: boolean) => {
-        this.updateStoneListData(checklistId, 'setStoneFoundStatus', (curList: StoneChecklist) => {
-                return {
-                    ...curList, 
-                    stoneLocations: curList.stoneLocations.map(stonLoc => {
-                        if (stonLoc.stoneId === stoneId) {
-                            return {...stonLoc, isFound: value};
-                        } else {
-                            return {...stonLoc}
-                        }
-                    })
-                }
-            });
+    const updateChecklistName = (checklistId: string, newChecklistname: string) => {
+        updateStoneListData(checklistId, 'updateChecklistName', (curList: StoneChecklist) => {
+            return {
+                ...curList,
+                checklistName: newChecklistname,
+            }
+        });
     }
 
-    updateChecklistName = (checklistId: string, newChecklistname: string) => {
-        this.updateStoneListData(checklistId, 'updateChecklistName', (curList: StoneChecklist) => {
-                return {
-                    ...curList,
-                    checklistName: newChecklistname,
-                }
-            });
+    const toggleHideCompletedStones = (checklistId: string) => {
+        updateStoneListData(checklistId, 'toggleHideCompletedStones', (curList: StoneChecklist) => {
+            return {
+                ...curList,
+                hideCompletedStones: !curList.hideCompletedStones,
+            }
+        });
     }
 
-    toggleHideCompletedStones = (checklistId: string) => {
-        this.updateStoneListData(checklistId, 'toggleHideCompletedStones', (curList: StoneChecklist) => {
-                return {
-                    ...curList,
-                    hideCompletedStones: !curList.hideCompletedStones,
-                }
-            });
-    }
-
-    addNewChecklist = (newChecklistName: string) => {
+    const addNewChecklist = useCallback(async (newChecklistName: string) => {
         const newChecklist: StoneChecklist = createNewStoneChecklist(newChecklistName);
-        db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).collection('checklists').add(newChecklist).then((docRef) => {
-            db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).set({
-                activeChecklistId: docRef.id
-            });
+        const docRef = await addDoc(collection(db, 'users', userId, 'checklists'), newChecklist);
+        setDoc(doc(db, 'users', userId), {
+            activeChecklistId: docRef.id
         });
-    }
+    }, [userId, db]);
 
-    activateChecklist = (checklistId: string) => {
-        this.setState((state) => {
-            if (checklistId != null && state.userChecklists.some(c => c.checklistId === checklistId)) {
-                db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid).set({
-                    activeChecklistId: checklistId
-                });
-            } 
-            return null;
-        })
-    }
-
-    deleteChecklist = (checklistId: string) => {
-        this.setState((state) => {
-            const userDoc = db.collection('users').doc((this.props.firebaseApp.auth().currentUser as firebase.User).uid);
-            userDoc.collection('checklists').doc(checklistId).delete().then(() => {
-                if (state.activeChecklistId === checklistId && state.userChecklists.length > 1) {
-                    const firstChecklistId = state.userChecklists[0].checklistId;
-                    this.activateChecklist(firstChecklistId === checklistId ? state.userChecklists[1].checklistId : firstChecklistId);
-                } 
+    const activateChecklist = (checklistId: string) => {
+        if (checklistId != null && userChecklists.some(c => c.checklistId === checklistId)) {
+            setDoc(doc(db, 'users', userId), {
+                activeChecklistId: checklistId
             });
-
-            return null;
-        })
+        } 
+        return null;
     }
 
-    hydrateChecklistFromFB(fbChecklistDoc: firebase.firestore.QueryDocumentSnapshot): StoneChecklist {
+    const deleteChecklist = async (checklistId: string) => {
+        await deleteDoc(doc(db, 'users', userId, 'checklists', checklistId));
+        if (activeChecklistId === checklistId && userChecklists.length > 1) {
+            const firstChecklistId = userChecklists[0].checklistId;
+            activateChecklist(firstChecklistId === checklistId ? userChecklists[1].checklistId : firstChecklistId);
+        } 
+        return null;
+    }
+
+    const hydrateChecklistFromFB = (fbChecklistDoc: QueryDocumentSnapshot): StoneChecklist => {
         const extractedChecklist: StoneChecklist = {...(fbChecklistDoc.data() as StoneChecklist)};
         extractedChecklist.checklistId = fbChecklistDoc.id;
         return extractedChecklist;
     }
 
-    render() {
-        return this.state == null ? (
+    useEffect(() => {
+        const checklistObserver = onSnapshot(collection(db, 'users', userId, 'checklists'), checklistSnapshot => {
+            if (checklistSnapshot.size < 1) {
+                addNewChecklist('Untitled');
+            } else {
+                setUserChecklists(checklistSnapshot.docs.map(hydrateChecklistFromFB));
+            }
+        });
+
+        return checklistObserver;
+    }, [userId, addNewChecklist, db]);
+
+    useEffect(() => {
+        const userObserver = onSnapshot(doc(db, 'users', userId), userSnapshot => {
+            const userData = userSnapshot.data();
+            if (userData !== undefined) {
+                setActiveChecklistId(userData.activeChecklistId);
+            }
+        });
+
+        return userObserver;
+    }, [userId, db]);
+
+    return userChecklists === null || activeChecklistId === null ? (
             <FullPageLoader message={'Uno Momento'}></FullPageLoader>
         )
         : (
             <IonSplitPane contentId="main">
                 <ChecklistSummaryList
-                    checklistSummaries={getChecklistSummaries(this.state.userChecklists)}
-                    activeChecklistId={this.state.activeChecklistId}
-                    addNewChecklist={this.addNewChecklist}
-                    activateChecklist={this.activateChecklist}
-                    deleteChecklist={this.deleteChecklist}
-                    logOutClicked={this.props.logOutClicked}
+                    checklistSummaries={getChecklistSummaries(userChecklists)}
+                    activeChecklistId={activeChecklistId}
+                    addNewChecklist={addNewChecklist}
+                    activateChecklist={activateChecklist}
+                    deleteChecklist={deleteChecklist}
+                    logOutClicked={logOutClicked}
                     />
                 <ChecklistPage
                     pageElemId="main"
-                    checklist={this.state.userChecklists.find(c => c.checklistId === this.state.activeChecklistId) || this.state.userChecklists[0]}
-                    setStoneFoundStatus={(stoneId: number, value: boolean) => {this.setStoneFoundStatus(this.state.activeChecklistId, stoneId, value)}}
-                    updateChecklistName={(newChecklistName: string) => {this.updateChecklistName(this.state.activeChecklistId, newChecklistName)}}
-                    toggleHideCompletedStones={() => {this.toggleHideCompletedStones(this.state.activeChecklistId)}}
+                    checklist={userChecklists.find(c => c.checklistId === activeChecklistId) || userChecklists[0]}
+                    setStoneFoundStatus={(stoneId: number, value: boolean) => {setStoneFoundStatus(activeChecklistId, stoneId, value)}}
+                    updateChecklistName={(newChecklistName: string) => {updateChecklistName(activeChecklistId, newChecklistName)}}
+                    toggleHideCompletedStones={() => {toggleHideCompletedStones(activeChecklistId)}}
                     />
             </IonSplitPane>
         )
-    }
 }
 
 export default UserChecklistsManager;

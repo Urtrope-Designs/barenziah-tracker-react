@@ -1,12 +1,13 @@
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { initializeApp } from 'firebase/app';
-import { User, getAuth, onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router';
 
 import UserChecklistsManager from './components/UserChecklistsManager';
 import LoginPage from './pages/LoginPage';
+import { getAppAuth } from './util/auth';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -45,13 +46,13 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 
 const logOut = () => {
-    getAuth(firebaseApp).signOut();
+    getAppAuth(firebaseApp).signOut();
 }
 
 const BtrApp: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null | undefined>(undefined);
     useEffect(() => {
-        const unregisterAuthObserver = onAuthStateChanged(getAuth(firebaseApp), user => {
+        const unregisterAuthObserver = onAuthStateChanged(getAppAuth(firebaseApp), user => {
             setCurrentUser(user);
         })
 

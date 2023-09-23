@@ -3,8 +3,9 @@ import React from 'react';
 import FirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
 import { FirebaseApp } from 'firebase/app';
-import { EmailAuthProvider, getAuth } from 'firebase/auth';
+import { EmailAuthProvider } from 'firebase/auth';
 import '../theme/firebaseui-styling.global.css';
+import { getAppAuth } from '../util/auth';
 
 interface LoginPageProps {
     firebaseApp: FirebaseApp;
@@ -35,7 +36,7 @@ const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {
                 </IonToolbar>
             </IonHeader>
             <IonContent class="ion-padding">
-                <FirebaseAuth className={'firebaseUi'} uiConfig={uiConfig} firebaseAuth={getAuth(firebaseApp)} />
+                <FirebaseAuth className={'firebaseUi'} uiConfig={uiConfig} firebaseAuth={getAppAuth(firebaseApp)} />
             </IonContent>
         </IonPage>
     );

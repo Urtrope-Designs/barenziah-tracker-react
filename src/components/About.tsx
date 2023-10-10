@@ -1,16 +1,15 @@
-import { Capacitor } from "@capacitor/core"
-import { IonPage, IonButton, IonIcon, IonAlert } from "@ionic/react"
+import { Capacitor } from "@capacitor/core";
+import { IonAlert, IonButton, IonIcon, IonPage } from "@ionic/react";
 import { skull } from "ionicons/icons";
 import { useState } from "react";
 
 interface AboutProps {
     dismissHandler: () => void;
+    deleteUserClicked(): any;
 }
 
-export const About: React.FC<AboutProps> = ({dismissHandler}) => {
+export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked}) => {
     const [showDeleteAccountAlert, setShowDeleteAccountAlert] = useState<boolean>(false);
-
-    const deleteUserAccount = () => {};
     
     return (
         <IonPage>
@@ -39,7 +38,7 @@ export const About: React.FC<AboutProps> = ({dismissHandler}) => {
                     {
                         text: 'Yes, burn it.',
                         role: 'destructive', 
-                        handler: () => deleteUserAccount(),
+                        handler: deleteUserClicked,
                     }
                 ]}
             />

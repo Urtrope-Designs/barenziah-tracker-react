@@ -35,10 +35,11 @@ interface ChecklistSummaryListProps extends RouteComponentProps {
   activateChecklist(checklistId: string): any;
   deleteChecklist(checklistId: string): any;
   logOutClicked(): any;
+  deleteUserClicked(): any;
 }
 
 const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
-  checklistSummaries, activeChecklistId, addNewChecklist, activateChecklist, deleteChecklist, logOutClicked,
+  checklistSummaries, activeChecklistId, addNewChecklist, activateChecklist, deleteChecklist, logOutClicked, deleteUserClicked,
 }) => {
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const [newChecklistName, setNewChecklistName] = useState<string>('');
@@ -143,7 +144,7 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
           ]}
         />
         <IonModal isOpen={showAboutModal} class="aboutModal">
-          <About dismissHandler={() => setShowAboutModal(false)}/>
+          <About dismissHandler={() => setShowAboutModal(false)} deleteUserClicked={deleteUserClicked}/>
         </IonModal>
       </IonContent>
       <IonFooter>

@@ -1,20 +1,21 @@
 import { IonSplitPane } from '@ionic/react';
-import { QueryDocumentSnapshot, addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, setDoc } from 'firebase/firestore';
+import { FirebaseApp } from 'firebase/app';
+import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, QueryDocumentSnapshot, setDoc } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { StoneChecklist } from '../declarations';
 import ChecklistPage from '../pages/ChecklistPage';
 import { createNewStoneChecklist, getChecklistSummaries } from '../util/user-checklists';
 import ChecklistSummaryList from './ChecklistSummaryList';
 import FullPageLoader from './FullPageLoader';
-import { FirebaseApp } from 'firebase/app';
 
 interface UserChecklistManagerProps {
     logOutClicked(): any;
+    deleteUserClicked(): any;
     firebaseApp: FirebaseApp;
     userId: string;
 }
 
-const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp, userId, logOutClicked}) => {
+const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp, userId, logOutClicked, deleteUserClicked}) => {
     const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>([]);
     const [activeChecklistId, setActiveChecklistId] = useState<string | null>(null);
     const db = getFirestore(firebaseApp);
@@ -132,14 +133,15 @@ const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp
                     activateChecklist={activateChecklist}
                     deleteChecklist={deleteChecklist}
                     logOutClicked={logOutClicked}
-                    />
+                    deleteUserClicked={deleteUserClicked}
+                />
                 <ChecklistPage
                     pageElemId="main"
                     checklist={userChecklists.find(c => c.checklistId === activeChecklistId) || userChecklists[0]}
                     setStoneFoundStatus={(stoneId: number, value: boolean) => {setStoneFoundStatus(activeChecklistId, stoneId, value)}}
                     updateChecklistName={(newChecklistName: string) => {updateChecklistName(activeChecklistId, newChecklistName)}}
                     toggleHideCompletedStones={() => {toggleHideCompletedStones(activeChecklistId)}}
-                    />
+                />
             </IonSplitPane>
         )
 }

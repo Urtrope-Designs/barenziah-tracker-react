@@ -1,7 +1,7 @@
 import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { initializeApp } from 'firebase/app';
-import { User, onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged, deleteUser } from 'firebase/auth';
 import React, { useEffect, useState } from 'react';
 import { Redirect, Route } from 'react-router';
 
@@ -49,6 +49,13 @@ const logOut = () => {
     getAppAuth(firebaseApp).signOut();
 }
 
+const deleteUserAccount = () => {
+    const user = getAppAuth(firebaseApp).currentUser;
+    if (user) {
+        deleteUser(user);
+    }
+};
+
 const BtrApp: React.FC = () => {
     const [currentUser, setCurrentUser] = useState<User | null | undefined>(undefined);
     useEffect(() => {
@@ -70,7 +77,7 @@ const BtrApp: React.FC = () => {
             <IonReactRouter>
                 <IonRouterOutlet>
                     <Redirect exact from="/" to="/userchecklists" />
-                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} firebaseApp={firebaseApp} userId={currentUser.uid} />} />
+                    <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} deleteUserClicked={deleteUserAccount} firebaseApp={firebaseApp} userId={currentUser.uid} />} />
                 </IonRouterOutlet>
             </IonReactRouter>
         </IonApp>

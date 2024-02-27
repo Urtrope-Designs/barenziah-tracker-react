@@ -1,4 +1,4 @@
-import { IonSplitPane } from '@ionic/react';
+import { IonModal, IonSplitPane } from '@ionic/react';
 import { FirebaseApp } from 'firebase/app';
 import { addDoc, collection, deleteDoc, doc, getFirestore, onSnapshot, QueryDocumentSnapshot, setDoc } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -7,6 +7,7 @@ import ChecklistPage from '../pages/ChecklistPage';
 import { createNewStoneChecklist, getChecklistSummaries } from '../util/user-checklists';
 import ChecklistSummaryList from './ChecklistSummaryList';
 import FullPageLoader from './FullPageLoader';
+import { About } from './About';
 
 interface UserChecklistManagerProps {
     logOutClicked(): any;
@@ -18,6 +19,7 @@ interface UserChecklistManagerProps {
 const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp, userId, logOutClicked, deleteUserClicked}) => {
     const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>([]);
     const [activeChecklistId, setActiveChecklistId] = useState<string | null>(null);
+    const [showAboutModal, setShowAboutModal] = useState<boolean>(false);
     const db = getFirestore(firebaseApp);
 
     const updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {
@@ -98,6 +100,10 @@ const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp
         return extractedChecklist;
     }
 
+    const aboutClicked = () => {
+        setShowAboutModal(true);
+    }
+
     useEffect(() => {
         const checklistObserver = onSnapshot(collection(db, 'users', userId, 'checklists'), checklistSnapshot => {
             if (checklistSnapshot.size < 1) {
@@ -125,24 +131,30 @@ const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp
             <FullPageLoader message={'Uno Momento'}></FullPageLoader>
         )
         : (
-            <IonSplitPane contentId="main">
-                <ChecklistSummaryList
-                    checklistSummaries={getChecklistSummaries(userChecklists)}
-                    activeChecklistId={activeChecklistId}
-                    addNewChecklist={addNewChecklist}
-                    activateChecklist={activateChecklist}
-                    deleteChecklist={deleteChecklist}
-                    logOutClicked={logOutClicked}
-                    deleteUserClicked={deleteUserClicked}
-                />
-                <ChecklistPage
-                    pageElemId="main"
-                    checklist={userChecklists.find(c => c.checklistId === activeChecklistId) || userChecklists[0]}
-                    setStoneFoundStatus={(stoneId: number, value: boolean) => {setStoneFoundStatus(activeChecklistId, stoneId, value)}}
-                    updateChecklistName={(newChecklistName: string) => {updateChecklistName(activeChecklistId, newChecklistName)}}
-                    toggleHideCompletedStones={() => {toggleHideCompletedStones(activeChecklistId)}}
-                />
-            </IonSplitPane>
+                <>
+                <IonSplitPane contentId="main">
+                    <ChecklistSummaryList
+                        checklistSummaries={getChecklistSummaries(userChecklists)}
+                        activeChecklistId={activeChecklistId}
+                        addNewChecklist={addNewChecklist}
+                        activateChecklist={activateChecklist}
+                        deleteChecklist={deleteChecklist}
+                        logOutClicked={logOutClicked}
+                        aboutClicked={aboutClicked}
+                    />
+                    <ChecklistPage
+                        pageElemId="main"
+                        checklist={userChecklists.find(c => c.checklistId === activeChecklistId) || userChecklists[0]}
+                        setStoneFoundStatus={(stoneId: number, value: boolean) => {setStoneFoundStatus(activeChecklistId, stoneId, value)}}
+                        updateChecklistName={(newChecklistName: string) => {updateChecklistName(activeChecklistId, newChecklistName)}}
+                        toggleHideCompletedStones={() => {toggleHideCompletedStones(activeChecklistId)}}
+                    />
+
+                </IonSplitPane>
+                <IonModal isOpen={showAboutModal} class="aboutModal">
+                    <About dismissHandler={() => setShowAboutModal(false)} deleteUserClicked={deleteUserClicked}/>
+                </IonModal>
+            </>
         )
 }
 

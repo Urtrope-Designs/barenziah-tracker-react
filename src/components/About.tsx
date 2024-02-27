@@ -3,9 +3,15 @@ import { IonAlert, IonButton, IonIcon, IonPage } from "@ionic/react";
 import { skull } from "ionicons/icons";
 import { useState } from "react";
 
+
+// branch content based on syncToFirebase flag
+//// if true, include buttons to log out, stop syncing, and delete account
+//// if false, include button/explanation to start syncing
+// either way show privacy policy
+
 interface AboutProps {
     dismissHandler: () => void;
-    deleteUserClicked(): any;
+    deleteUserClicked?(): any;
 }
 
 export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked}) => {

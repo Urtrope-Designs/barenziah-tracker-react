@@ -7,6 +7,7 @@ import { Redirect, Route } from 'react-router';
 
 import UserChecklistsManager from './components/UserChecklistsManager';
 import LoginPage from './pages/LoginPage';
+import { WelcomePage } from './pages/WelcomePage';
 import { getAppAuth } from './util/auth';
 
 /* Core CSS required for Ionic components to work properly */
@@ -48,7 +49,7 @@ const firebaseConfig = {
 };
 const firebaseApp = initializeApp(firebaseConfig);
 
-const logOut = () => {
+const firebaseLogOut = () => {
     getAppAuth(firebaseApp).signOut();
 }
 
@@ -59,13 +60,38 @@ const deleteUserAccount = () => {
     }
 };
 
-// check localstorage for "syncToFirebase" flag
+const updateSyncLists = (doSync: boolean = true) => {
+    const store = new Storage();
+    store.create()
+        .then(() => store.set('syncToFirebase', doSync ? 'true' : 'false'))
+        .then(() => window.location.reload());
+}
+
+// first check localstorage for "syncToFirebase" flag:
+
+/** Firebase workflow (true)
+ * No user: show login page.
+ * User: load data and show it.
+ */
+
+/** Localstorage workflow (false)
+ * No data (INITIAL STATE): show welcome page: intro/instructions (including swiping stones), button at bottom to create new list, sync lists, "I have synced lists" (last two options might be same under the hood)
+ * Data: load data and show it.
+ */
+
 // if true, use existing workflow for firebase
 // if false, check localstorage for list data
 // if nothing, show welcome page (includes instructions for swiping stones)
 //// welcome page has a button to create a new list
 //// provide a section for syncing lists - include privacy policy and mention they can choose to sync later in settings
 //// also have a section about "hey wait, I have synced lists that I want to keep using"
+
+// other scenarios to consider:
+// start syncing with existing data (push existing data to firebase - need to redo list IDs?)
+// remove localstorage data
+// stop syncing data but don't delete account or data
+// delete account or destroy FB data after they have stopped syncing
+// always allow migrating FB data to localstorage when deleting FB account or stopping syncing?
 
 const BtrApp: React.FC = () => {
     const [syncToFirebase, setSyncToFirebase] = useState<boolean | null | undefined>(undefined);
@@ -75,10 +101,10 @@ const BtrApp: React.FC = () => {
         const store = new Storage();
         store.create()
             .then(() => store.get('syncToFirebase'))
-            .then(syncToFirebase => {
-                setSyncToFirebase(syncToFirebase === 'true' ? true : false);
+            .then(storeSyncValue => {
+                setSyncToFirebase(storeSyncValue === 'true' ? true : false);
 
-                if (syncToFirebase === 'false') {
+                if (storeSyncValue !== 'true') {
                     store.get('checklists')
                         .then(checklists => {
                             setChecklists(checklists);
@@ -94,6 +120,8 @@ const BtrApp: React.FC = () => {
             })
     
             return unregisterAuthObserver;
+        } else {
+            firebaseLogOut();
         }
     }, [syncToFirebase]);
     
@@ -102,14 +130,14 @@ const BtrApp: React.FC = () => {
                 <FullPageLoader message={'Uno Momento'}></FullPageLoader>
         )
             : currentUser === null ? (
-                <LoginPage firebaseApp={firebaseApp} />
+                <LoginPage firebaseApp={firebaseApp} cancelSyncingClicked={() => updateSyncLists(false)}/>
             )
             : (
             <IonApp>
                 <IonReactRouter>
                     <IonRouterOutlet>
                         <Redirect exact from="/" to="/userchecklists" />
-                        <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={logOut} deleteUserClicked={deleteUserAccount} firebaseApp={firebaseApp} userId={currentUser.uid} />} />
+                        <Route path="/userchecklists" render={(props) => <UserChecklistsManager {...props} logOutClicked={firebaseLogOut} deleteUserClicked={deleteUserAccount} firebaseApp={firebaseApp} userId={currentUser.uid} />} />
                     </IonRouterOutlet>
                 </IonReactRouter>
             </IonApp>
@@ -121,7 +149,7 @@ const BtrApp: React.FC = () => {
             )
         } else if (checklists === null) {
             return (
-                <WelcomePage />
+                <WelcomePage startSyncingClicked={() => updateSyncLists(true)} />
             )
         } else {
             return (

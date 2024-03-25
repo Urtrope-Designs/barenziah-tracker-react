@@ -6,8 +6,12 @@ import { createNewStoneChecklist, getChecklistSummaries } from "../util/user-che
 import ChecklistSummaryList from "./ChecklistSummaryList";
 import FullPageLoader from "./FullPageLoader";
 
-export const LocalUserChecklistsManager: React.FC = () => {
-    const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>([]);
+interface LocalUserChecklistsManagerProps { 
+    checklists: StoneChecklist[];
+}
+
+export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProps> = ({checklists}) => {
+    const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>(checklists ?? []);
     const [activeChecklistId, setActiveChecklistId] = useState<string | null>(null);
 
     const addNewChecklist = (newChecklistName: string) => {

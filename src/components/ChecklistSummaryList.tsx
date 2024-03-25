@@ -14,7 +14,6 @@ import {
   IonList,
   IonMenu,
   IonMenuToggle,
-  IonModal,
   IonTitle,
   IonToolbar
 } from '@ionic/react';
@@ -25,7 +24,6 @@ import { ChecklistSummary } from '../declarations';
 import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
-import { About } from './About';
 import './ChecklistSummaryList.css';
 
 interface ChecklistSummaryListProps extends RouteComponentProps {

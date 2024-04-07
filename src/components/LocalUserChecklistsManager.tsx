@@ -1,5 +1,6 @@
 import { IonSplitPane } from "@ionic/react";
-import { useState } from "react";
+import { Storage } from '@ionic/storage';
+import { useCallback, useEffect, useState } from "react";
 import { StoneChecklist } from "../declarations";
 import ChecklistPage from "../pages/ChecklistPage";
 import { createNewStoneChecklist, getChecklistSummaries } from "../util/user-checklists";
@@ -8,13 +9,14 @@ import FullPageLoader from "./FullPageLoader";
 
 interface LocalUserChecklistsManagerProps { 
     checklists: StoneChecklist[];
+    activeChecklistId: string | null;
 }
 
-export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProps> = ({checklists}) => {
-    const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>(checklists ?? []);
-    const [activeChecklistId, setActiveChecklistId] = useState<string | null>(null);
+export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProps> = (props) => {
+    const [userChecklists, setUserChecklists] = useState<StoneChecklist[]>(props.checklists ?? []);
+    const [activeChecklistId, setActiveChecklistId] = useState<string | null>(props.activeChecklistId);
 
-    const addNewChecklist = (newChecklistName: string) => {
+    const addNewChecklist = useCallback((newChecklistName: string) => {
         let newChecklistId: string;
         do {
             newChecklistId = Math.random().toString(36).substring(2);
@@ -24,7 +26,7 @@ export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProp
 
         setUserChecklists([...userChecklists, newChecklist]);
         setActiveChecklistId(newChecklist.checklistId);
-    }
+    }, [userChecklists]);
 
     const activateChecklist = (checklistId: string) => {
         if (checklistId != null && userChecklists.some(c => c.checklistId === checklistId)) {
@@ -50,7 +52,7 @@ export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProp
 
     const setStoneFoundStatus = (checklistId: string, stoneId: number, value: boolean) => {
         updateStoneListData(checklistId, 'setStoneFoundStatus', (checklist: StoneChecklist) => {
-            const updatedStones = checklist.stoneLocations.map(s => s.stoneId === stoneId ? {...s, found: value} : s);
+            const updatedStones = checklist.stoneLocations.map(s => s.stoneId === stoneId ? {...s, isFound: value} : s);
             return {...checklist, stoneLocations: updatedStones};
         });
     }
@@ -67,7 +69,25 @@ export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProp
         });
     }
 
-    // use useEffect to save userChecklists to local storage if it changes
+    useEffect(() => {
+        if (userChecklists.length === 0) {
+            addNewChecklist('Untitled');
+        }
+
+        const store = new Storage();
+        store.create()
+            .then(() => store.set('checklists', userChecklists));
+    }, [userChecklists, addNewChecklist]);
+    
+    useEffect(() => {
+        if(activeChecklistId === null) {
+            return;
+        }
+
+        const store = new Storage();
+        store.create()
+            .then(() => store.set('activeChecklistId', activeChecklistId));
+    }, [activeChecklistId]);
 
     return userChecklists === null || activeChecklistId === null ? (
         <FullPageLoader message={'Uno Momento'}></FullPageLoader>

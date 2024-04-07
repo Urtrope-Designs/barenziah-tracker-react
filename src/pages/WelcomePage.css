@@ -1,0 +1,7 @@
+.ion-page.welcomePage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+    height: 100vh;
+}

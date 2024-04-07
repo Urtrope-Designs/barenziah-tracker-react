@@ -24,8 +24,6 @@ import { ChecklistSummary } from '../declarations';
 import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
-import './ChecklistSummaryList.css';
-
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
   activeChecklistId: string;

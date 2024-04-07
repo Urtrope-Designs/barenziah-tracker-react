@@ -1,4 +1,4 @@
-import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonContent, IonFooter, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
 import FirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
@@ -45,13 +45,5 @@ const LoginPage: React.FC<LoginPageProps> = ({firebaseApp, cancelSyncingClicked}
         </IonPage>
     );
 };
-                // <IonCard>
-                //     <IonCardHeader>
-                //         <IonCardTitle>On Second Thought...</IonCardTitle>
-                //     </IonCardHeader>
-                //     <IonCardContent>
-                //         I don't want to sync my lists! (Please note that if you have synced lists and would like them to transfer to your device locally, you'll need to log in first)
-                //     </IonCardContent>
-                // </IonCard>
 
 export default LoginPage;

@@ -18,7 +18,7 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked})
     const [showDeleteAccountAlert, setShowDeleteAccountAlert] = useState<boolean>(false);
     
     return (
-        <IonPage>
+        <IonPage class="ion-padding">
             <div>
               <h1>All about it</h1>
               <p>This app was lovingly crafted by <a href="https://urtropedesigns.com/" target="_blank" rel="noreferrer noopener">Urtrope Designs</a></p>

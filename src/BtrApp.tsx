@@ -9,6 +9,10 @@ import UserChecklistsManager from './components/UserChecklistsManager';
 import LoginPage from './pages/LoginPage';
 import { WelcomePage } from './pages/WelcomePage';
 import { getAppAuth } from './util/auth';
+import FullPageLoader from './components/FullPageLoader';
+import { Storage } from '@ionic/storage';
+import { StoneChecklist } from './declarations';
+import { LocalUserChecklistsManager } from './components/LocalUserChecklistsManager';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -27,13 +31,9 @@ import '@ionic/react/css/text-alignment.css';
 import '@ionic/react/css/text-transformation.css';
 
 /* Theme variables */
-import FullPageLoader from './components/FullPageLoader';
 import './theme/variables.css';
 
 import './BtrApp.css';
-import { Storage } from '@ionic/storage';
-import { StoneChecklist } from './declarations';
-import { LocalUserChecklistsManager } from './components/LocalUserChecklistsManager';
 
 setupIonicReact();
 
@@ -96,7 +96,9 @@ const updateSyncLists = (doSync: boolean = true) => {
 const BtrApp: React.FC = () => {
     const [syncToFirebase, setSyncToFirebase] = useState<boolean | null | undefined>(undefined);
     const [currentUser, setCurrentUser] = useState<User | null | undefined>(undefined);
-    const [checklists, setChecklists] = useState<StoneChecklist[] | null | undefined>(undefined);
+
+    // might need to combine these into a single state object?
+    const [checklistData, setChecklistData] = useState<{checklists: StoneChecklist[] | null | undefined, activeChecklistId: string | null}>({checklists: undefined, activeChecklistId: null});
     useEffect(() => {
         const store = new Storage();
         store.create()
@@ -105,9 +107,9 @@ const BtrApp: React.FC = () => {
                 setSyncToFirebase(storeSyncValue === 'true' ? true : false);
 
                 if (storeSyncValue !== 'true') {
-                    store.get('checklists')
-                        .then(checklists => {
-                            setChecklists(checklists);
+                    Promise.all([store.get('checklists'), store.get('activeChecklistId')])
+                        .then(([checklists, activeChecklistId]) => {
+                            setChecklistData({checklists, activeChecklistId});
                         });
                 }
             });
@@ -124,6 +126,10 @@ const BtrApp: React.FC = () => {
             firebaseLogOut();
         }
     }, [syncToFirebase]);
+
+    const initLocalChecklists = () => {
+        setChecklistData({checklists: [], activeChecklistId: null});
+    }
     
     if (syncToFirebase === true) {
         return currentUser === undefined ? (
@@ -143,13 +149,13 @@ const BtrApp: React.FC = () => {
             </IonApp>
         )
     } else {
-        if (checklists === undefined) {
+        if (checklistData.checklists === undefined) {
             return (
                 <FullPageLoader message={'Uno Momento'}></FullPageLoader>
             )
-        } else if (checklists === null) {
+        } else if (checklistData.checklists === null) {
             return (
-                <WelcomePage startSyncingClicked={() => updateSyncLists(true)} />
+                <WelcomePage startSyncingClicked={() => updateSyncLists(true)} createListClicked={initLocalChecklists} />
             )
         } else {
             return (
@@ -157,7 +163,7 @@ const BtrApp: React.FC = () => {
                     <IonReactRouter>
                         <IonRouterOutlet>
                             <Redirect exact from="/" to="/userchecklists" />
-                            <Route path="/userchecklists" render={(props) => <LocalUserChecklistsManager {...props} checklists={checklists} />} />
+                            <Route path="/userchecklists" render={(props) => <LocalUserChecklistsManager {...props} checklists={checklistData.checklists!} activeChecklistId={checklistData.activeChecklistId} />} />
                         </IonRouterOutlet>
                     </IonReactRouter>
                 </IonApp>

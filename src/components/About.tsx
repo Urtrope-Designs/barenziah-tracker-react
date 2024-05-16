@@ -18,7 +18,7 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked})
     const [showDeleteAccountAlert, setShowDeleteAccountAlert] = useState<boolean>(false);
     
     return (
-        <IonPage class="ion-padding">
+        <IonPage className="ion-padding">
             <div>
               <h1>All about it</h1>
               <p>This app was lovingly crafted by <a href="https://urtropedesigns.com/" target="_blank" rel="noreferrer noopener">Urtrope Designs</a></p>
@@ -27,8 +27,13 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked})
                   : ''
               }
               <p>Most of the content in this app was pulled from the "Stones of Barenziah" article on the <a href="https://elderscrolls.fandom.com/wiki/Stones_of_Barenziah" target="_blank" rel="noreferrer noopener">Elder Scrolls Fandom Wiki</a></p>
-              <p>As for the email address you used to log in, I'm seriously not going to do anything with it beyond the purposes of handling your log-ins, but you can read the full legalese here in my <a href="https://www.termsfeed.com/live/ae0253cc-690a-43e6-9961-26964c15b6eb" target="_blank" rel="noreferrer noopener">privacy policy</a></p>
-              <p>If you want out though, I understand. Here is a self-destruct button to delete your account and all data permanently: <IonButton size="small" color="danger" onClick={() => setShowDeleteAccountAlert(true)}><IonIcon slot="icon-only" icon={skull}></IonIcon></IonButton></p>
+              {deleteUserClicked
+                ? <>
+                    <p>As for the email address you used to log in, I'm seriously not going to do anything with it beyond the purposes of handling your log-ins, but you can read the full legalese here in my <a href="https://www.termsfeed.com/live/ae0253cc-690a-43e6-9961-26964c15b6eb" target="_blank" rel="noreferrer noopener">privacy policy</a></p>
+                    <p>If you want out though, I understand. Here is a self-destruct button to delete your account and all data permanently: <IonButton size="small" color="danger" onClick={() => setShowDeleteAccountAlert(true)}><IonIcon slot="icon-only" icon={skull}></IonIcon></IonButton></p>
+                </>
+                : ''
+              }
             </div>
             <IonButton expand="full" onClick={() => dismissHandler()}>Cool story bro</IonButton>
             <IonAlert

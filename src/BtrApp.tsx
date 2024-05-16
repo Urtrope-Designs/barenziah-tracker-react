@@ -67,8 +67,6 @@ const updateSyncLists = (doSync: boolean = true) => {
         .then(() => window.location.reload());
 }
 
-// first check localstorage for "syncToFirebase" flag:
-
 /** Firebase workflow (true)
  * No user: show login page.
  * User: load data and show it.
@@ -79,25 +77,27 @@ const updateSyncLists = (doSync: boolean = true) => {
  * Data: load data and show it.
  */
 
-// if true, use existing workflow for firebase
-// if false, check localstorage for list data
-// if nothing, show welcome page (includes instructions for swiping stones)
-//// welcome page has a button to create a new list
-//// provide a section for syncing lists - include privacy policy and mention they can choose to sync later in settings
-//// also have a section about "hey wait, I have synced lists that I want to keep using"
-
 // other scenarios to consider:
 // start syncing with existing data (push existing data to firebase - need to redo list IDs?)
 // remove localstorage data
 // stop syncing data but don't delete account or data
 // delete account or destroy FB data after they have stopped syncing
 // always allow migrating FB data to localstorage when deleting FB account or stopping syncing?
+// user has fb lists but isn't logged in (need to start syncing, log in, then click "stop syncing" or "delete account")
+
+//  sync  ||  logged in  ||  has fb lists  ||  has local lists
+
+// log out: no transfer of lists (still syncing)
+// stop syncing: option to transfer lists to local storage; no deletion of account or data, but log out
+// delete account: option to transfer lists to local storage; delete account and all data (if they don't transfer, lists are lost)
+// start syncing with existing lists: delete local lists with option to transfer to firebase (if they don't transfer, lists are lost?)
+// delete FB account and transfer lists to local, then start syncing again, log into different account with existing lists, then delete account again (if we delete local lists on sync start, not an issue)
+
 
 const BtrApp: React.FC = () => {
     const [syncToFirebase, setSyncToFirebase] = useState<boolean | null | undefined>(undefined);
     const [currentUser, setCurrentUser] = useState<User | null | undefined>(undefined);
 
-    // might need to combine these into a single state object?
     const [checklistData, setChecklistData] = useState<{checklists: StoneChecklist[] | null | undefined, activeChecklistId: string | null}>({checklists: undefined, activeChecklistId: null});
     useEffect(() => {
         const store = new Storage();
@@ -122,9 +122,7 @@ const BtrApp: React.FC = () => {
             })
     
             return unregisterAuthObserver;
-        } else {
-            firebaseLogOut();
-        }
+        } 
     }, [syncToFirebase]);
 
     const initLocalChecklists = () => {

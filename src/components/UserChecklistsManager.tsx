@@ -151,7 +151,7 @@ const UserChecklistsManager: React.FC<UserChecklistManagerProps> = ({firebaseApp
                     />
 
                 </IonSplitPane>
-                <IonModal isOpen={showAboutModal} class="aboutModal">
+                <IonModal isOpen={showAboutModal} className="aboutModal">
                     <About dismissHandler={() => setShowAboutModal(false)} deleteUserClicked={deleteUserClicked}/>
                 </IonModal>
             </>

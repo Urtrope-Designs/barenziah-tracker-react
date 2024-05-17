@@ -12,11 +12,14 @@ import { useState } from "react";
 interface AboutProps {
     dismissHandler: () => void;
     deleteUserClicked?(): any;
+    startSyncingClicked?(): any;
 }
 
-export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked}) => {
+export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked, startSyncingClicked}) => {
     const [showDeleteAccountAlert, setShowDeleteAccountAlert] = useState<boolean>(false);
-    
+    const [showStartSyncingAlert, setShowStartSyncingAlert] = useState<boolean>(false);
+    const privacyPolicyDisclaimer = <p>As for the email address you use to log in, I'm seriously not going to do anything with it beyond the purposes of handling your log-ins, but you can read the full legalese here in my <a href="https://www.termsfeed.com/live/ae0253cc-690a-43e6-9961-26964c15b6eb" target="_blank" rel="noreferrer noopener">privacy policy</a></p>;
+
     return (
         <IonPage className="ion-padding">
             <div>
@@ -29,10 +32,14 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked})
               <p>Most of the content in this app was pulled from the "Stones of Barenziah" article on the <a href="https://elderscrolls.fandom.com/wiki/Stones_of_Barenziah" target="_blank" rel="noreferrer noopener">Elder Scrolls Fandom Wiki</a></p>
               {deleteUserClicked
                 ? <>
-                    <p>As for the email address you used to log in, I'm seriously not going to do anything with it beyond the purposes of handling your log-ins, but you can read the full legalese here in my <a href="https://www.termsfeed.com/live/ae0253cc-690a-43e6-9961-26964c15b6eb" target="_blank" rel="noreferrer noopener">privacy policy</a></p>
+                    {privacyPolicyDisclaimer}
                     <p>If you want out though, I understand. Here is a self-destruct button to delete your account and all data permanently: <IonButton size="small" color="danger" onClick={() => setShowDeleteAccountAlert(true)}><IonIcon slot="icon-only" icon={skull}></IonIcon></IonButton></p>
                 </>
-                : ''
+                : <>
+                    <p>Currently all of your data is safe on your local device. If you don't mind shoving it into the cloud, click the "Start Syncing" button below and create an account that you can use on any device with this app installed to share your data in real time.</p>
+                    {privacyPolicyDisclaimer}
+                    <IonButton size="small" color="primary" onClick={() => setShowStartSyncingAlert(true)}>Start Syncing</IonButton>
+                </>
               }
             </div>
             <IonButton expand="full" onClick={() => dismissHandler()}>Cool story bro</IonButton>
@@ -50,6 +57,23 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked})
                         text: 'Yes, burn it.',
                         role: 'destructive', 
                         handler: deleteUserClicked,
+                    }
+                ]}
+            />
+            <IonAlert
+                isOpen={showStartSyncingAlert}
+                message={'Are you sure you want to move your lists to the cloud? Your data will be deleted from your local device and copied to the cloud account you set up.'}
+                onDidDismiss={() => {setShowStartSyncingAlert(false)}}
+                buttons={[
+                    {
+                        text: 'Cancel',
+                        role: 'cancel',
+                        cssClass: 'secondary',
+                    },
+                    {
+                        text: 'Yes, sync my data already!',
+                        role: 'confirm', 
+                        handler: startSyncingClicked,
                     }
                 ]}
             />

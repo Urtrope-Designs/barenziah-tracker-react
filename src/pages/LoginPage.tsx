@@ -40,7 +40,7 @@ const LoginPage: React.FC<LoginPageProps> = ({firebaseApp, cancelSyncingClicked}
                 <FirebaseAuth className={'firebaseUi'} uiConfig={uiConfig} firebaseAuth={getAppAuth(firebaseApp)} />
             </IonContent>
             <IonFooter class="ion-padding">
-                <IonButton expand="full" onClick={cancelSyncingClicked}>Cancel</IonButton>
+                <IonButton expand="full" onClick={cancelSyncingClicked}>Use Local Data</IonButton>
             </IonFooter>
         </IonPage>
     );

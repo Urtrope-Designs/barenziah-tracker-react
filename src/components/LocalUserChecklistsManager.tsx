@@ -11,6 +11,7 @@ import { About } from "./About";
 interface LocalUserChecklistsManagerProps { 
     checklists: StoneChecklist[];
     activeChecklistId: string | null;
+    startSyncingClicked(): any;
 }
 
 export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProps> = (props) => {
@@ -114,7 +115,7 @@ export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProp
                 />
             </IonSplitPane>
             <IonModal isOpen={showAboutModal} className="aboutModal">
-                <About dismissHandler={() => setShowAboutModal(false)} />
+                <About dismissHandler={() => setShowAboutModal(false)} startSyncingClicked={props.startSyncingClicked} />
             </IonModal>
         </>
     )

@@ -36,7 +36,9 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked, 
                     <p>If you want out though, I understand. Here is a self-destruct button to delete your account and all data permanently: <IonButton size="small" color="danger" onClick={() => setShowDeleteAccountAlert(true)}><IonIcon slot="icon-only" icon={skull}></IonIcon></IonButton></p>
                 </>
                 : <>
-                    <p>Currently all of your data is safe on your local device. If you don't mind shoving it into the cloud, click the "Start Syncing" button below and create an account that you can use on any device with this app installed to share your data in real time.</p>
+                    <p>Currently all of your data is safe on your local device. If you'd like to be able to share lists between multiple devices though, click the "start syncing" button below to switch to using a cloud account, which will require you to create a password.</p>
+                    <p>For now you'll have to create all new lists if you switch to the cloud (transferring data will be part of an upcoming release of the app).</p>
+                    {/* <p>Currently all of your data is safe on your local device. If you don't mind shoving it into the cloud, click the "Start Syncing" button below and create an account that you can use on any device with this app installed to share your data in real time.</p> */}
                     {privacyPolicyDisclaimer}
                     <IonButton size="small" color="primary" onClick={() => setShowStartSyncingAlert(true)}>Start Syncing</IonButton>
                 </>
@@ -62,7 +64,8 @@ export const About: React.FC<AboutProps> = ({dismissHandler, deleteUserClicked, 
             />
             <IonAlert
                 isOpen={showStartSyncingAlert}
-                message={'Are you sure you want to move your lists to the cloud? Your data will be deleted from your local device and copied to the cloud account you set up.'}
+                // message={'Are you sure you want to move your lists to the cloud? Your data will be deleted from your local device and copied to the cloud account you set up.'}
+                message = 'Are you sure you want to switch to using a cloud account? Your data will not transfer, but you can always switch back by clicking "Use Local Data" on the login screen.'
                 onDidDismiss={() => {setShowStartSyncingAlert(false)}}
                 buttons={[
                     {

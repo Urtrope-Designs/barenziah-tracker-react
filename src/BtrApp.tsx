@@ -161,7 +161,7 @@ const BtrApp: React.FC = () => {
                     <IonReactRouter>
                         <IonRouterOutlet>
                             <Redirect exact from="/" to="/userchecklists" />
-                            <Route path="/userchecklists" render={(props) => <LocalUserChecklistsManager {...props} checklists={checklistData.checklists!} activeChecklistId={checklistData.activeChecklistId} />} />
+                            <Route path="/userchecklists" render={(props) => <LocalUserChecklistsManager {...props} checklists={checklistData.checklists!} activeChecklistId={checklistData.activeChecklistId} startSyncingClicked={() => updateSyncLists(true)} />} />
                         </IonRouterOutlet>
                     </IonReactRouter>
                 </IonApp>

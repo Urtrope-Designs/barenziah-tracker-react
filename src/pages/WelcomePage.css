@@ -1,9 +1,4 @@
 .ion-page.welcomePage {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    overflow-y: auto;
-    height: 100vh;
     background: linear-gradient(180deg, black, rgba(0,0,0,.3)), url(../../public/assets/icon/icon.png);
     background-size: cover;
     background-position: center;
@@ -11,9 +6,26 @@
 }
 
 .ion-page.welcomePage h1 {
+    width: 100vw;
     color: var(--ion-color-primary-tint);
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-.ion-page.welcomePage p {
-    background-color: rgba(0,0,0,.4);
+.ion-page.welcomePage .welcomeSection {
+    background-color: rgba(0,0,0,.5);
+    border: 1px solid #555;
+    margin-bottom: 2rem;
+    padding: .2rem;
+}
+.ion-page.welcomePage .welcomeSection:last-of-type {
+    margin-bottom: 0;
+}
+
+.ion-page.welcomePage .welcomeSection h3 {
+    transform: translateY(-1rem);
+    color: var(--ion-color-primary-tint);
+    margin: 0 auto 0 auto;
+    display: inline-block;
+    background-color: #000;
 }

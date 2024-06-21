@@ -13,9 +13,10 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({startSyncingClicked, cr
     return (
         <IonPage className="ion-padding welcomePage">
             <div>
-                <h1>Welcome to Barenziah Tracker</h1>
+                <h1>Barenziah Tracker</h1>
                 <p>This app will help you hunt down all 24 Stones in the "Unusual Gem" / "No Stone Unturned" questline: simply tap any stone location in the list to see the location on the map as well as a screenshot of the placement of the stone within the location.</p>
                 <p>As each stone is obtained, simply swipe it left to mark it as completed. There's also a button at the bottom of the list that will hide all the stones that you have marked as found.</p>
+                <img src="/assets/demo/stone-swipe.gif" alt="Swipe a stone to mark it complete."/>
                 <p>You can create a new list and switch between existing ones from the hamburger menu, to track multiple playthroughs.</p>
                 <br/>
                 <p>By default your lists will just be saved on your current device, but you can click the "Sync Lists" button below to create an account to sync your lists across any number of devices (this option will always be available from the "about" tab on the menu).</p>

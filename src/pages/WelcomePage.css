@@ -4,4 +4,16 @@
     justify-content: space-between;
     overflow-y: auto;
     height: 100vh;
+    background: linear-gradient(180deg, black, rgba(0,0,0,.3)), url(../../public/assets/icon/icon.png);
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+}
+
+.ion-page.welcomePage h1 {
+    color: var(--ion-color-primary-tint);
+}
+
+.ion-page.welcomePage p {
+    background-color: rgba(0,0,0,.4);
 }

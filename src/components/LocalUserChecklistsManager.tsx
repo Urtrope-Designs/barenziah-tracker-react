@@ -40,7 +40,9 @@ export const LocalUserChecklistsManager: React.FC<LocalUserChecklistsManagerProp
     const deleteChecklist = (checklistId: string) => {
         const remainingChecklists = userChecklists.filter(c => c.checklistId !== checklistId);
         setUserChecklists(remainingChecklists);
-        setActiveChecklistId(remainingChecklists[0]?.checklistId);
+        if (activeChecklistId === checklistId) {
+            setActiveChecklistId(remainingChecklists[0]?.checklistId);
+        }
     }
 
     const updateStoneListData = (checklistToUpdateId: string, callerName: string, updateFunc: (existingChecklist: StoneChecklist) => StoneChecklist) => {

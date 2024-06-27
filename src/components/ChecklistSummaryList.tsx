@@ -1,4 +1,6 @@
 import {
+  InputChangeEventDetail,
+  InputCustomEvent,
   IonAlert,
   IonButton,
   IonButtons,
@@ -41,8 +43,8 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
   const [newChecklistName, setNewChecklistName] = useState<string>('');
   const [requestedDeleteChecklistId, setRequestedDeleteChecklistId] = useState<string | null>(null);
 
-  const handleNewChecklistNameChange = (event: CustomEvent) => {
-    setNewChecklistName((event.target as HTMLInputElement).value);
+  const handleNewChecklistInput = (event: InputCustomEvent<InputChangeEventDetail>) => {
+    setNewChecklistName(event.detail?.value ?? '');
   }
 
   const handleNewChecklistInputSave = () => {
@@ -50,7 +52,7 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
     setNewChecklistName('');
   }
 
-  const handleNewChecklistInputKeypress = (event: React.KeyboardEvent<HTMLIonInputElement>) => {
+  const handleNewChecklistChange = (event: any) => {
     if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
       handleNewChecklistInputSave();
       event.target.blur();
@@ -102,8 +104,8 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
               placeholder="New Character"
               maxlength={MAX_CHARACTER_NAME_LENGTH}
               value={newChecklistName}
-              onIonChange={handleNewChecklistNameChange}
-              onKeyPress={handleNewChecklistInputKeypress}
+              onIonInput={handleNewChecklistInput}
+              onKeyUp={handleNewChecklistChange}
             />
             <IonButtons slot="end">
               <IonMenuToggle autoHide={false}>

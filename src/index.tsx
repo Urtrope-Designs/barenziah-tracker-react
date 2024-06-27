@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import BtrApp from './BtrApp';
 import { SplashScreen } from '@capacitor/splash-screen';
 import { StatusBar } from '@capacitor/status-bar';
@@ -25,4 +25,6 @@ if (Capacitor.isNativePlatform()) {
   SplashScreen.hide();
 }
 
-ReactDOM.render(<BtrApp />, document.getElementById('btr_app'));
+const container = document.getElementById('btr_app');
+const root = createRoot(container!);
+root.render(<BtrApp /> );

@@ -1,4 +1,4 @@
-import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter } from '@ionic/react';
+import { IonButtons, IonContent, IonHeader, IonMenuButton, IonPage, IonTitle, IonToolbar, IonInput, IonButton, IonFooter, InputCustomEvent } from '@ionic/react';
 import React from 'react';
 import { StoneChecklist, ImageDetails } from '../declarations';
 import StoneSummaryList from '../components/StoneSummaryList';
@@ -40,8 +40,8 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
     }
   }
 
-  handleChecklistNameInputChange = (event: CustomEvent) => {
-    this.setState({checklistNameEdit: (event.target as HTMLInputElement).value});
+  handleChecklistNameInput = (event: InputCustomEvent) => {
+    this.setState({checklistNameEdit: event.detail?.value ?? ''});
   }
 
   handleChecklistNameInputFocusSteal = (event: FocusEvent) => {
@@ -104,9 +104,9 @@ class ChecklistPage extends React.Component<ChecklistPageProps, ChecklistPageSta
                 maxlength={MAX_CHARACTER_NAME_LENGTH}
                 key={this.props.checklist.checklistId}
                 value={this.state.checklistNameEdit}
-                onIonChange={this.handleChecklistNameInputChange}
+                onIonInput={this.handleChecklistNameInput}
                 onBlur={this.handleChecklistNameInputBlur}
-                onKeyPress={this.handleChecklistNameInputKeypress}
+                onKeyUp={this.handleChecklistNameInputKeypress}
               />
             </IonTitle>
             <IonButtons slot="end">

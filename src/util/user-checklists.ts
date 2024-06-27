@@ -15,9 +15,9 @@ export function getChecklistSummaries(checklists: StoneChecklist[]): ChecklistSu
    return summaries;
 };
 
-export function createNewStoneChecklist(newChecklistName: string): StoneChecklist {
+export function createNewStoneChecklist(newChecklistName: string, checklistId: string = ''): StoneChecklist {
     const newChecklist: StoneChecklist = {
-        checklistId: '',
+        checklistId: checklistId,
         checklistName: newChecklistName,
         stoneLocations: stoneLocations.map(stone => {
             const stonLoc: StoneLocation = {...stone, isFound: false};

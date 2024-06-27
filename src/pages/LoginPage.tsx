@@ -1,4 +1,4 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
+import { IonButton, IonContent, IonFooter, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import React from 'react';
 import FirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 
@@ -9,6 +9,7 @@ import { getAppAuth } from '../util/auth';
 
 interface LoginPageProps {
     firebaseApp: FirebaseApp;
+    cancelSyncingClicked(): any;
 }
 
 const uiConfig: firebaseui.auth.Config = {
@@ -27,7 +28,7 @@ const uiConfig: firebaseui.auth.Config = {
     tosUrl: 'https://www.termsfeed.com/live/9ffc9d1f-0e53-4431-b2d5-a100b15a9f29',
 }
 
-const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {
+const LoginPage: React.FC<LoginPageProps> = ({firebaseApp, cancelSyncingClicked}) => {
     return (
         <IonPage>
             <IonHeader>
@@ -38,6 +39,9 @@ const LoginPage: React.FC<LoginPageProps> = ({firebaseApp}) => {
             <IonContent class="ion-padding">
                 <FirebaseAuth className={'firebaseUi'} uiConfig={uiConfig} firebaseAuth={getAppAuth(firebaseApp)} />
             </IonContent>
+            <IonFooter class="ion-padding">
+                <IonButton expand="full" onClick={cancelSyncingClicked}>Use Local Data</IonButton>
+            </IonFooter>
         </IonPage>
     );
 };

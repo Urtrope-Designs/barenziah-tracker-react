@@ -1,4 +1,6 @@
 import {
+  InputChangeEventDetail,
+  InputCustomEvent,
   IonAlert,
   IonButton,
   IonButtons,
@@ -14,7 +16,6 @@ import {
   IonList,
   IonMenu,
   IonMenuToggle,
-  IonModal,
   IonTitle,
   IonToolbar
 } from '@ionic/react';
@@ -25,29 +26,25 @@ import { ChecklistSummary } from '../declarations';
 import { MAX_CHARACTER_NAME_LENGTH } from '../util/constants';
 import ChecklistSummaryEntry from './ChecklistSummaryEntry';
 
-import { About } from './About';
-import './ChecklistSummaryList.css';
-
 interface ChecklistSummaryListProps extends RouteComponentProps {
   checklistSummaries: ChecklistSummary[];
   activeChecklistId: string;
   addNewChecklist(checklistName: string): any;
   activateChecklist(checklistId: string): any;
   deleteChecklist(checklistId: string): any;
-  logOutClicked(): any;
-  deleteUserClicked(): any;
+  logOutClicked?(): any;
+  aboutClicked?(): any;
 }
 
 const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
-  checklistSummaries, activeChecklistId, addNewChecklist, activateChecklist, deleteChecklist, logOutClicked, deleteUserClicked,
+  checklistSummaries, activeChecklistId, addNewChecklist, activateChecklist, deleteChecklist, logOutClicked, aboutClicked,
 }) => {
   const menuRef = useRef<HTMLIonMenuElement>(null);
   const [newChecklistName, setNewChecklistName] = useState<string>('');
   const [requestedDeleteChecklistId, setRequestedDeleteChecklistId] = useState<string | null>(null);
-  const [showAboutModal, setShowAboutModal] = useState<boolean>(false);
 
-  const handleNewChecklistNameChange = (event: CustomEvent) => {
-    setNewChecklistName((event.target as HTMLInputElement).value);
+  const handleNewChecklistInput = (event: InputCustomEvent<InputChangeEventDetail>) => {
+    setNewChecklistName(event.detail?.value ?? '');
   }
 
   const handleNewChecklistInputSave = () => {
@@ -55,7 +52,7 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
     setNewChecklistName('');
   }
 
-  const handleNewChecklistInputKeypress = (event: React.KeyboardEvent<HTMLIonInputElement>) => {
+  const handleNewChecklistChange = (event: any) => {
     if (event.key === "Enter" && event.target instanceof HTMLInputElement) {
       handleNewChecklistInputSave();
       event.target.blur();
@@ -68,10 +65,6 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
 
   const confirmDeleteChecklistSummary = (checklistId: string) => {
     setRequestedDeleteChecklistId(checklistId);
-  }
-
-  const aboutClicked = () => {
-    setShowAboutModal(true);
   }
 
   return (
@@ -111,8 +104,8 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
               placeholder="New Character"
               maxlength={MAX_CHARACTER_NAME_LENGTH}
               value={newChecklistName}
-              onIonChange={handleNewChecklistNameChange}
-              onKeyPress={handleNewChecklistInputKeypress}
+              onIonInput={handleNewChecklistInput}
+              onKeyUp={handleNewChecklistChange}
             />
             <IonButtons slot="end">
               <IonMenuToggle autoHide={false}>
@@ -143,22 +136,23 @@ const ChecklistSummaryList: React.FC<ChecklistSummaryListProps> = ({
             }
           ]}
         />
-        <IonModal isOpen={showAboutModal} class="aboutModal">
-          <About dismissHandler={() => setShowAboutModal(false)} deleteUserClicked={deleteUserClicked}/>
-        </IonModal>
       </IonContent>
       <IonFooter>
         <IonToolbar>
-          <IonButtons slot="start">
-            <IonButton color="primary" fill='clear' onClick={logOutClicked}>
-              Log Out
-            </IonButton>
-          </IonButtons>
-          <IonButtons slot="end">
-            <IonButton color="primary" fill="clear" onClick={aboutClicked}>
-              About
-            </IonButton>
-          </IonButtons>
+          {logOutClicked &&
+            <IonButtons slot="start">
+              <IonButton color="primary" fill='clear' onClick={logOutClicked}>
+                Log Out
+              </IonButton>
+            </IonButtons>
+          }
+          {aboutClicked &&
+            <IonButtons slot="end">
+              <IonButton color="primary" fill="clear" onClick={aboutClicked}>
+                About
+              </IonButton>
+            </IonButtons>
+          }
         </IonToolbar>
       </IonFooter>
     </IonMenu>
